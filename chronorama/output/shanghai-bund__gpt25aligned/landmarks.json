@@ -1,0 +1,921 @@
+{
+  "version": 1,
+  "reference_year": 2020,
+  "coordinates": "Normalized image coordinates, origin top left. rail_curve: y = a*(x-.52)^2 + b*(x-.52) + c, measured across x=.365 to .705.",
+  "review": "All 52 frames inspected. Railing fitted to the top handrail; bank measurements reviewed against the far shoreline. Tower points reviewed on enlarged crops, only after completion. Jin Mao excluded because its position relative to SWFC changes. People, boats, clouds and changing architecture are not correspondence points.",
+  "frames": {
+    "1865": {
+      "sha256": "f7044de9933b4761727783e6a01f70ddaeb3c3707696085ac674484b6904e3de",
+      "rail_curve": [
+        -0.85,
+        0.0,
+        0.692
+      ],
+      "bank_y": 0.547852,
+      "landmarks": {}
+    },
+    "1870": {
+      "sha256": "b210b109bc637d14935cddc761fba5b572d6e34f0b4e3f43e535a30239917f44",
+      "rail_curve": [
+        -0.85,
+        0.02,
+        0.683
+      ],
+      "bank_y": 0.537109,
+      "landmarks": {}
+    },
+    "1875": {
+      "sha256": "85aa63b1bcdaaf00137d09ee4a5c199c958bed5cf8c34048714940e38b372b5e",
+      "rail_curve": [
+        -0.85,
+        0.03,
+        0.688
+      ],
+      "bank_y": 0.543945,
+      "landmarks": {}
+    },
+    "1880": {
+      "sha256": "4a2583e3c2e273c943a9d53016d1ca3bd6a5a5345c55115f8c219cdead99d980",
+      "rail_curve": [
+        -0.7,
+        0.06,
+        0.691
+      ],
+      "bank_y": 0.548828,
+      "landmarks": {}
+    },
+    "1885": {
+      "sha256": "47a4760e8dca1e8982e277bbc973bf6a76f4478054b8ee0317e57f42332b06af",
+      "rail_curve": [
+        -0.8,
+        -0.01,
+        0.661
+      ],
+      "bank_y": 0.536133,
+      "landmarks": {}
+    },
+    "1890": {
+      "sha256": "4bba888c0243424c6d776c6f8581a678aad32711e3d80c152e2e924a25295a6f",
+      "rail_curve": [
+        -0.75,
+        0.0,
+        0.679
+      ],
+      "bank_y": 0.560547,
+      "landmarks": {}
+    },
+    "1895": {
+      "sha256": "18b3d13403ff743ad52ce307b967aac751e5fc4680444f6ce66caf43a0b32091",
+      "rail_curve": [
+        -0.7,
+        0.03,
+        0.684
+      ],
+      "bank_y": 0.542969,
+      "landmarks": {}
+    },
+    "1900": {
+      "sha256": "b9d36535365799a673feb3ab3f944d22875d8d4045586ce0159c1c871e837ab1",
+      "rail_curve": [
+        -0.95,
+        -0.02,
+        0.651
+      ],
+      "bank_y": 0.535156,
+      "landmarks": {}
+    },
+    "1905": {
+      "sha256": "2c6f80591f4dbac8f35a12f5c487738169bcc06cccd50c7d946b707507dd7c0e",
+      "rail_curve": [
+        -0.9,
+        0.0,
+        0.664
+      ],
+      "bank_y": 0.540039,
+      "landmarks": {}
+    },
+    "1910": {
+      "sha256": "f55698687182ac3f892dd405facc12e93c80bd2ffe42ffd71b91e574d6eed1ea",
+      "rail_curve": [
+        -0.75,
+        0.02,
+        0.672
+      ],
+      "bank_y": 0.5625,
+      "landmarks": {}
+    },
+    "1915": {
+      "sha256": "024e7d9337333f5abb64c0295d4d83affad81d358f4ab326decf4307ca773600",
+      "rail_curve": [
+        -0.85,
+        -0.02,
+        0.673
+      ],
+      "bank_y": 0.545,
+      "landmarks": {}
+    },
+    "1918": {
+      "sha256": "70713d8d01d4ab0adc3921c9013b629e842e425e12092540a7a522f42f13e6fc",
+      "rail_curve": [
+        -0.8,
+        0.01,
+        0.675
+      ],
+      "bank_y": 0.548828,
+      "landmarks": {}
+    },
+    "1922": {
+      "sha256": "97812b2f45e92322dd8c02886735a839d7bfc8f83310930af54e55bcae49068d",
+      "rail_curve": [
+        -0.75,
+        0.02,
+        0.697
+      ],
+      "bank_y": 0.573242,
+      "landmarks": {}
+    },
+    "1925": {
+      "sha256": "11c3cc5e073aed9b62de1cb69d54273958c5be64fb2f0edd07a7f6b476e0a7a2",
+      "rail_curve": [
+        -0.7,
+        0.02,
+        0.682
+      ],
+      "bank_y": 0.5625,
+      "landmarks": {}
+    },
+    "1928": {
+      "sha256": "76c43f9cb5a3792362d0bda655b54f34ae5862e31a9674350cb6d5ebb6637b25",
+      "rail_curve": [
+        -0.8,
+        -0.01,
+        0.677
+      ],
+      "bank_y": 0.545,
+      "landmarks": {}
+    },
+    "1930": {
+      "sha256": "ac139c7de35d70e0451b4d3f89723dd89898ad4e548789afb0360ad182a8e717",
+      "rail_curve": [
+        -0.8,
+        0.02,
+        0.688
+      ],
+      "bank_y": 0.563477,
+      "landmarks": {}
+    },
+    "1932": {
+      "sha256": "a0f047b701e80f7595cd139a72069d34835f4f53fd1a948f0c49a1044e7d489b",
+      "rail_curve": [
+        -0.7,
+        0.03,
+        0.664
+      ],
+      "bank_y": 0.554,
+      "landmarks": {}
+    },
+    "1935": {
+      "sha256": "eeda39e205f59d60f9502f957b14f29d1365d889838815ad171ab5c9059da66a",
+      "rail_curve": [
+        -0.7,
+        0.03,
+        0.675
+      ],
+      "bank_y": 0.56543,
+      "landmarks": {}
+    },
+    "1937": {
+      "sha256": "8819e669ce6bd98787f0c0898a7ac42d1ca32c17aa85ac521cd892fe7734a0f6",
+      "rail_curve": [
+        -0.9,
+        -0.02,
+        0.66
+      ],
+      "bank_y": 0.542969,
+      "landmarks": {}
+    },
+    "1941": {
+      "sha256": "1945bd9585e0197847595dd5de54eef6d78c9371e35e495b90a3c0524edbc97a",
+      "rail_curve": [
+        -0.9,
+        0.01,
+        0.669
+      ],
+      "bank_y": 0.547852,
+      "landmarks": {}
+    },
+    "1943": {
+      "sha256": "5abbdd140f1da8c1994dca81ae71771a31f4f9cbc0b7ab2c47d783c3b343d3d5",
+      "rail_curve": [
+        -0.8,
+        -0.01,
+        0.659
+      ],
+      "bank_y": 0.536133,
+      "landmarks": {}
+    },
+    "1946": {
+      "sha256": "ea8de6c16e9e62a77c06e8f5f3c1bf8deb9a739ae71833302fee3138becd5d0a",
+      "rail_curve": [
+        -1.05,
+        -0.03,
+        0.64
+      ],
+      "bank_y": 0.533,
+      "landmarks": {}
+    },
+    "1950": {
+      "sha256": "97333f869554cb12c1938fd9be87175d31f61edf860ef254d7d35048a7d198ea",
+      "rail_curve": [
+        -0.85,
+        0.01,
+        0.67
+      ],
+      "bank_y": 0.541992,
+      "landmarks": {}
+    },
+    "1955": {
+      "sha256": "9fa16f427a5abec431586baafe47df0a5214c5a345840fd7789474b73cb8c20f",
+      "rail_curve": [
+        -0.9,
+        -0.02,
+        0.649
+      ],
+      "bank_y": 0.529,
+      "landmarks": {}
+    },
+    "1960": {
+      "sha256": "bbdb9e09d8b49391157c4e5db67ebe95994d2a6c1ba066f071380859cd1af3fe",
+      "rail_curve": [
+        -0.85,
+        0.0,
+        0.651
+      ],
+      "bank_y": 0.531,
+      "landmarks": {}
+    },
+    "1965": {
+      "sha256": "3ccac910425c28a91c755b456f62e5a7fa2be607dd1b7d9fd8bacac65d94edb9",
+      "rail_curve": [
+        -0.85,
+        -0.02,
+        0.663
+      ],
+      "bank_y": 0.548828,
+      "landmarks": {}
+    },
+    "1970": {
+      "sha256": "7c9a73e7d76ebd65196840acac5aa6757e07794e303a3ad4558a993d4347681d",
+      "rail_curve": [
+        -0.85,
+        0.0,
+        0.664
+      ],
+      "bank_y": 0.544922,
+      "landmarks": {}
+    },
+    "1975": {
+      "sha256": "9efb88d24bbed7d51bcfba08d3bcc08d396006043189ecc3f4841337cccf9caf",
+      "rail_curve": [
+        -0.85,
+        -0.02,
+        0.671
+      ],
+      "bank_y": 0.547852,
+      "landmarks": {}
+    },
+    "1978": {
+      "sha256": "cce527c86b88900af2ae31ef093025a150f232234dacef0e3f23b5b6a85c6846",
+      "rail_curve": [
+        -0.7,
+        0.0,
+        0.682
+      ],
+      "bank_y": 0.56543,
+      "landmarks": {}
+    },
+    "1982": {
+      "sha256": "39a64d21212aea50a41998ec673fb3305860ee88ede80fb345a9aabde5d52211",
+      "rail_curve": [
+        -0.75,
+        0.01,
+        0.678
+      ],
+      "bank_y": 0.552734,
+      "landmarks": {}
+    },
+    "1985": {
+      "sha256": "71671ff4050fc829ec2a61e60bd5936e0ec437ff5dbb5e9d82bc037973c9c9f0",
+      "rail_curve": [
+        -0.85,
+        -0.02,
+        0.656
+      ],
+      "bank_y": 0.529297,
+      "landmarks": {}
+    },
+    "1988": {
+      "sha256": "e7f2c0d9c8af21be28bf331808d6a8722104a1808eff02729d169ba1fe22bba9",
+      "rail_curve": [
+        -0.75,
+        -0.01,
+        0.673
+      ],
+      "bank_y": 0.544922,
+      "landmarks": {}
+    },
+    "1990": {
+      "sha256": "67035b4bed9baeb463b89961c5049361c0fd804fd383de20f068cf969e213615",
+      "rail_curve": [
+        -0.9,
+        -0.02,
+        0.665
+      ],
+      "bank_y": 0.544,
+      "landmarks": {}
+    },
+    "1992": {
+      "sha256": "9a049788a944fc2c7f21c0537c8e1003d7663d1605ac743340e90ab6781a4331",
+      "rail_curve": [
+        -0.85,
+        -0.01,
+        0.674
+      ],
+      "bank_y": 0.554688,
+      "landmarks": {}
+    },
+    "1993": {
+      "sha256": "cd375195ff39a2b513b1c2259fe8cd1561ed7e7b2b577fdefe270bb871f4ccb6",
+      "rail_curve": [
+        -0.8,
+        -0.01,
+        0.7
+      ],
+      "bank_y": 0.573242,
+      "landmarks": {}
+    },
+    "1994": {
+      "sha256": "7d48f501bc2138808c5d8dde89f987467d5e8aa4db80db217911d7c6b44b7c98",
+      "rail_curve": [
+        -0.8,
+        0.0,
+        0.674
+      ],
+      "bank_y": 0.553,
+      "landmarks": {
+        "pearl_tip": [
+          0.4788,
+          0.276
+        ],
+        "pearl_upper": [
+          0.4788,
+          0.379
+        ],
+        "pearl_lower": [
+          0.4788,
+          0.483
+        ],
+        "pearl_base": [
+          0.4788,
+          0.553
+        ]
+      }
+    },
+    "1995": {
+      "sha256": "8448e2b6806f7d939a76aaedfdb80d2902ed1bcd2f2e69393bd1046c4e19acf6",
+      "rail_curve": [
+        -0.75,
+        0.0,
+        0.69
+      ],
+      "bank_y": 0.560547,
+      "landmarks": {
+        "pearl_tip": [
+          0.4782,
+          0.29
+        ],
+        "pearl_upper": [
+          0.4782,
+          0.393
+        ],
+        "pearl_lower": [
+          0.4782,
+          0.495
+        ],
+        "pearl_base": [
+          0.4782,
+          0.560546875
+        ]
+      }
+    },
+    "1997": {
+      "sha256": "25fb0eeb2843781b4cb893de1c839ed445f0e5ef5014ce55c155c52bb79e409a",
+      "rail_curve": [
+        -0.85,
+        -0.01,
+        0.668
+      ],
+      "bank_y": 0.546875,
+      "landmarks": {
+        "pearl_tip": [
+          0.478,
+          0.276
+        ],
+        "pearl_upper": [
+          0.478,
+          0.376
+        ],
+        "pearl_lower": [
+          0.478,
+          0.483
+        ],
+        "pearl_base": [
+          0.478,
+          0.546875
+        ]
+      }
+    },
+    "1998": {
+      "sha256": "3852aea5ad25fac314a239622203df8cc557daadcf33a5d7b4ab74e580e60847",
+      "rail_curve": [
+        -0.8,
+        -0.01,
+        0.685
+      ],
+      "bank_y": 0.564,
+      "landmarks": {
+        "pearl_tip": [
+          0.4782,
+          0.279
+        ],
+        "pearl_upper": [
+          0.4782,
+          0.388
+        ],
+        "pearl_lower": [
+          0.4782,
+          0.495
+        ],
+        "pearl_base": [
+          0.4782,
+          0.564
+        ]
+      }
+    },
+    "2000": {
+      "sha256": "39614b41f326e08448ac36fc72f866f56540bc37c9672f40ef419e140a0f6994",
+      "rail_curve": [
+        -0.85,
+        -0.02,
+        0.662
+      ],
+      "bank_y": 0.545,
+      "landmarks": {
+        "pearl_tip": [
+          0.4768,
+          0.257
+        ],
+        "pearl_upper": [
+          0.4768,
+          0.36
+        ],
+        "pearl_lower": [
+          0.4768,
+          0.474
+        ],
+        "pearl_base": [
+          0.4768,
+          0.545
+        ]
+      }
+    },
+    "2002": {
+      "sha256": "f30cb3c90ecd65a0a23b69e40e09f0ed59e212e13c18ef7986d46fdc7c295f4a",
+      "rail_curve": [
+        -0.8,
+        -0.01,
+        0.677
+      ],
+      "bank_y": 0.555664,
+      "landmarks": {
+        "pearl_tip": [
+          0.4773,
+          0.267
+        ],
+        "pearl_upper": [
+          0.4773,
+          0.375
+        ],
+        "pearl_lower": [
+          0.4773,
+          0.486
+        ],
+        "pearl_base": [
+          0.4773,
+          0.5556640625
+        ]
+      }
+    },
+    "2004": {
+      "sha256": "0c5d84ad6ef3353a24927f0a582b5c2e6bd8591cf9b5572356ca6dfd155b143a",
+      "rail_curve": [
+        -0.85,
+        -0.01,
+        0.665
+      ],
+      "bank_y": 0.555664,
+      "landmarks": {
+        "pearl_tip": [
+          0.4795,
+          0.254
+        ],
+        "pearl_upper": [
+          0.4795,
+          0.37
+        ],
+        "pearl_lower": [
+          0.4795,
+          0.478
+        ],
+        "pearl_base": [
+          0.4795,
+          0.5556640625
+        ]
+      }
+    },
+    "2006": {
+      "sha256": "60b8d39e92607c7a107aca3e9579bd8a6f2e43625f8652f2ffd48e569d8b3eb8",
+      "rail_curve": [
+        -0.75,
+        -0.01,
+        0.67
+      ],
+      "bank_y": 0.545898,
+      "landmarks": {
+        "pearl_tip": [
+          0.4775,
+          0.273
+        ],
+        "pearl_upper": [
+          0.4775,
+          0.379
+        ],
+        "pearl_lower": [
+          0.4775,
+          0.487
+        ],
+        "pearl_base": [
+          0.4775,
+          0.5458984375
+        ]
+      }
+    },
+    "2008": {
+      "sha256": "a59595e30fcae7496ec909f24ce73903eb53eb793dd0d02cbb2c381dc3657a11",
+      "rail_curve": [
+        -0.85,
+        -0.01,
+        0.681
+      ],
+      "bank_y": 0.555664,
+      "landmarks": {
+        "pearl_tip": [
+          0.4768,
+          0.281
+        ],
+        "pearl_upper": [
+          0.4768,
+          0.386
+        ],
+        "pearl_lower": [
+          0.4768,
+          0.492
+        ],
+        "pearl_base": [
+          0.4768,
+          0.5556640625
+        ],
+        "swfc_top": [
+          0.5858,
+          0.332
+        ],
+        "swfc_base": [
+          0.5858,
+          0.5506640625
+        ]
+      }
+    },
+    "2010": {
+      "sha256": "62b51259c1d9a4ef91e6367c105b2a5df29a3b676811e510d4b678017af0d552",
+      "rail_curve": [
+        -0.95,
+        -0.02,
+        0.683
+      ],
+      "bank_y": 0.563477,
+      "landmarks": {
+        "pearl_tip": [
+          0.4765,
+          0.281
+        ],
+        "pearl_upper": [
+          0.4765,
+          0.386
+        ],
+        "pearl_lower": [
+          0.4765,
+          0.491
+        ],
+        "pearl_base": [
+          0.4765,
+          0.5634765625
+        ],
+        "swfc_top": [
+          0.586,
+          0.361
+        ],
+        "swfc_base": [
+          0.586,
+          0.5584765625
+        ]
+      }
+    },
+    "2012": {
+      "sha256": "8dd38a5f0dea56ba437dfa7dddac932716ac53e372b1eea430de02b6598ede0e",
+      "rail_curve": [
+        -0.9,
+        -0.01,
+        0.688
+      ],
+      "bank_y": 0.569336,
+      "landmarks": {
+        "pearl_tip": [
+          0.4792,
+          0.291
+        ],
+        "pearl_upper": [
+          0.4792,
+          0.401
+        ],
+        "pearl_lower": [
+          0.4792,
+          0.5
+        ],
+        "pearl_base": [
+          0.4792,
+          0.5693359375
+        ],
+        "swfc_top": [
+          0.557,
+          0.388
+        ],
+        "swfc_base": [
+          0.557,
+          0.5643359375
+        ]
+      }
+    },
+    "2013": {
+      "sha256": "09ba92c07c6f7292b3ad9ffdb3e6fdeaa139bd197c8021b5eb6bda2b885c7dc0",
+      "rail_curve": [
+        -0.85,
+        -0.01,
+        0.677
+      ],
+      "bank_y": 0.558594,
+      "landmarks": {
+        "pearl_tip": [
+          0.4782,
+          0.279
+        ],
+        "pearl_upper": [
+          0.4782,
+          0.386
+        ],
+        "pearl_lower": [
+          0.4782,
+          0.489
+        ],
+        "pearl_base": [
+          0.4782,
+          0.55859375
+        ],
+        "swfc_top": [
+          0.5605,
+          0.372
+        ],
+        "swfc_base": [
+          0.5605,
+          0.55359375
+        ]
+      }
+    },
+    "2014": {
+      "sha256": "ecce5e74d9385d9361e6c09d3914924294cbdbaa11db6f22c01c1e3e73e495c2",
+      "rail_curve": [
+        -0.9,
+        -0.01,
+        0.656
+      ],
+      "bank_y": 0.536133,
+      "landmarks": {
+        "pearl_tip": [
+          0.4777,
+          0.254
+        ],
+        "pearl_upper": [
+          0.4777,
+          0.365
+        ],
+        "pearl_lower": [
+          0.4777,
+          0.471
+        ],
+        "pearl_base": [
+          0.4777,
+          0.5361328125
+        ],
+        "swfc_top": [
+          0.5635,
+          0.357
+        ],
+        "swfc_base": [
+          0.5635,
+          0.5311328125
+        ]
+      }
+    },
+    "2015": {
+      "sha256": "488037712ec3ab263db1c9eb86e7869d0b9399c8151a2ab34b391bbb386993f0",
+      "rail_curve": [
+        -0.85,
+        -0.01,
+        0.694
+      ],
+      "bank_y": 0.568,
+      "landmarks": {
+        "pearl_tip": [
+          0.478,
+          0.278
+        ],
+        "pearl_upper": [
+          0.478,
+          0.392
+        ],
+        "pearl_lower": [
+          0.478,
+          0.499
+        ],
+        "pearl_base": [
+          0.478,
+          0.568
+        ],
+        "swfc_top": [
+          0.5633,
+          0.374
+        ],
+        "swfc_base": [
+          0.5633,
+          0.563
+        ],
+        "shanghai_top": [
+          0.603,
+          0.303
+        ],
+        "shanghai_base": [
+          0.603,
+          0.563
+        ]
+      }
+    },
+    "2017": {
+      "sha256": "4e5434462b5a2b5415e2e023f4f8483b417dccaa2f516bcb00c7f64811b6cc4c",
+      "rail_curve": [
+        -0.9,
+        0.0,
+        0.681
+      ],
+      "bank_y": 0.557617,
+      "landmarks": {
+        "pearl_tip": [
+          0.4795,
+          0.263
+        ],
+        "pearl_upper": [
+          0.4795,
+          0.372
+        ],
+        "pearl_lower": [
+          0.4795,
+          0.486
+        ],
+        "pearl_base": [
+          0.4795,
+          0.5576171875
+        ],
+        "swfc_top": [
+          0.5655,
+          0.348
+        ],
+        "swfc_base": [
+          0.5655,
+          0.5526171875
+        ],
+        "shanghai_top": [
+          0.605,
+          0.278
+        ],
+        "shanghai_base": [
+          0.605,
+          0.5526171875
+        ]
+      }
+    },
+    "2018": {
+      "sha256": "4402281709fbf9aa27a14cd11318ec7e5e1e8de3e5e54184de195264db8b8772",
+      "rail_curve": [
+        -0.85,
+        0.0,
+        0.701
+      ],
+      "bank_y": 0.574,
+      "landmarks": {
+        "pearl_tip": [
+          0.4808,
+          0.289
+        ],
+        "pearl_upper": [
+          0.4808,
+          0.395
+        ],
+        "pearl_lower": [
+          0.4808,
+          0.507
+        ],
+        "pearl_base": [
+          0.4808,
+          0.574
+        ],
+        "swfc_top": [
+          0.5655,
+          0.378
+        ],
+        "swfc_base": [
+          0.5655,
+          0.569
+        ],
+        "shanghai_top": [
+          0.608,
+          0.309
+        ],
+        "shanghai_base": [
+          0.608,
+          0.569
+        ]
+      }
+    },
+    "2020": {
+      "sha256": "5508e9bc5372798badcf71bb6af599a1f89ee1fcc3ac81316ac6dbc0d0a96b4b",
+      "rail_curve": [
+        -0.85,
+        -0.01,
+        0.671
+      ],
+      "bank_y": 0.553711,
+      "landmarks": {
+        "pearl_tip": [
+          0.4789,
+          0.277
+        ],
+        "pearl_upper": [
+          0.4789,
+          0.377
+        ],
+        "pearl_lower": [
+          0.4789,
+          0.485
+        ],
+        "pearl_base": [
+          0.4789,
+          0.5537109375
+        ],
+        "swfc_top": [
+          0.5625,
+          0.366
+        ],
+        "swfc_base": [
+          0.5625,
+          0.5487109375
+        ],
+        "shanghai_top": [
+          0.5945,
+          0.305
+        ],
+        "shanghai_base": [
+          0.5945,
+          0.5487109375
+        ]
+      }
+    }
+  }
+}

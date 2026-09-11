@@ -3,6 +3,8 @@ output/*
 output/shanghai-bund__gpt25aligned/*
 !output/shanghai-bund__gpt25aligned/*.jpg
 !output/shanghai-bund__gpt25aligned/manifest.json
+!output/shanghai-bund__gpt25aligned/landmarks.json
+!output/shanghai-bund__gpt25aligned/registration.json
 Archive/
 dist/
 .claude/

@@ -133,6 +133,8 @@ python3 -m http.server 8747
 
 Then open <http://localhost:8747/viewer.html>.
 Drag to look around, scroll to zoom, arrow keys or the timeline to move through time.
+Press anywhere on the timeline to select a year immediately. Hold and drag to
+blend continuously between adjacent images; release to select the nearest year.
 
 The default library is `shanghai-bund__gpt25aligned`, with 52 panoramas from
 1865 through 2020. It was copied from the matching folder in `Archive`, with
@@ -145,7 +147,34 @@ the original JPGs preserved. The archive contains three variants:
 | `__gpt25aligned` | Complete 52-year set with tower alignment corrections, used by the site |
 
 Archive and the older generated libraries stay local. Only the selected
-library's finished JPGs and manifest are tracked in Git.
+library's finished JPGs, manifest, and alignment data are tracked in Git.
+
+### Landmark alignment
+
+The selected library also includes `landmarks.json`: reviewed coordinates for
+all 52 frames, using the far shoreline, the foreground handrail, and completed
+Oriental Pearl, SWFC, and Shanghai towers. The 2020 frame is the reference.
+The viewer uses a smooth displacement map for each image before blending it
+with its neighbor. The JPGs stay unchanged, and corrections fade to zero at
+the panorama seam, poles, and rear view.
+
+To update a frame's measurements, edit its entry in `landmarks.json` and run:
+
+```bash
+python3 -m pip install numpy scipy
+python3 register.py output/shanghai-bund__gpt25aligned
+```
+
+This compiles `registration.json` and rejects maps that fold, strongly compress,
+or leave the image. Each frame's annotation and map are tied to its JPG's SHA-256;
+after replacing an image, review its measurements and update the annotation's
+hash before compiling. The site build rejects stale maps. The compiler's pixel
+error measures agreement with annotations, not independent image accuracy.
+
+Append `?alignment=off` to the viewer URL to compare the original geometry.
+Some generated buildings change shape or even swap relative positions; Jin Mao
+is excluded from the control points for that reason. Moving people, boats,
+clouds, and changing architecture still dissolve between frames.
 
 ## Deploy
 
@@ -157,7 +186,8 @@ node build.mjs                  # preview build in dist/
 
 Live at <https://chronorama.vercel.app>. `build.mjs` validates the manifest and
 reads every listed image before replacing a previous build. It stages
-`viewer.html` as `index.html` and copies only the published images and manifest.
+`viewer.html` as `index.html` and copies the published images, manifest, and
+compiled alignment maps. Landmark annotations stay in the source repository.
 Each published image has a content hash in its filename, so replacing a photo
 also changes its URL. This allows long browser caching without showing an old
 photo after a deployment.

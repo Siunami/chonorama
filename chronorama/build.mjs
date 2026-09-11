@@ -29,9 +29,30 @@ for (const library of libraries) {
   }
   const files = [];
   const images = {};
+  let registration;
+  if (manifest.registration) {
+    if (manifest.registration !== "registration.json") throw new Error("Invalid registration filename");
+    const data = await readFile(join(source, manifest.registration));
+    registration = JSON.parse(data);
+    if (registration.version !== 1 || !Number.isInteger(registration.width) ||
+        !Number.isInteger(registration.height) || registration.width < 1 ||
+        registration.height < 1 || registration.width > 256 || registration.height > 256 ||
+        !(registration.range > 0 && registration.range <= .25)) {
+      throw new Error(`Invalid registration in ${library}`);
+    }
+    files.push({ name: manifest.registration, data });
+  }
   for (const year of manifest.years) {
     const data = await readFile(join(source, `${year}.jpg`));
-    const hash = createHash("sha256").update(data).digest("hex").slice(0, 12);
+    const digest = createHash("sha256").update(data).digest("hex");
+    const hash = digest.slice(0, 12);
+    if (registration) {
+      const frame = registration.frames?.[year];
+      if (frame?.sha256 !== digest || typeof frame?.offsets !== "string" ||
+          Buffer.from(frame.offsets, "base64").length !== registration.width * registration.height * 4) {
+        throw new Error(`Stale or invalid alignment for ${library}/${year}.jpg; review landmarks and run register.py`);
+      }
+    }
     const name = `${year}.${hash}.jpg`;
     images[year] = name;
     files.push({ name, data });
@@ -51,6 +72,6 @@ for (const { library, manifest, files } of batches) {
   await mkdir(target, { recursive: true });
   await writeFile(join(target, "manifest.json"), JSON.stringify(manifest, null, 2) + "\n");
   for (const { name, data } of files) await writeFile(join(target, name), data);
-  console.log(`Built ${library}: ${files.length} panoramas`);
+  console.log(`Built ${library}: ${manifest.years.length} panoramas`);
 }
 console.log(`Site ready in ${destination}`);

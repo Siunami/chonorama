@@ -2,6 +2,7 @@
   "id": "shanghai-bund__gpt25aligned",
   "name": "Shanghai — The Bund",
   "anchor_year": 2020,
+  "registration": "registration.json",
   "years": [
     1865,
     1870,

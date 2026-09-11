@@ -21,7 +21,7 @@
           line-height: 1.05; letter-spacing: -.01em; }
   #era { font-size: 12px; opacity: .55; margin-left: auto; text-align: right; max-width: 42%; }
 
-  #track { position: relative; height: 40px; margin-top: 4px; touch-action: none; }
+  #track { position: relative; height: 40px; margin-top: 4px; touch-action: none; cursor: ew-resize; }
   #rail { position: absolute; left: 0; right: 0; top: 17px; height: 2px;
           background: rgba(255,255,255,.22); border-radius: 2px; }
   #fill { position: absolute; left: 0; top: 17px; height: 2px; background: rgba(255,255,255,.75);
@@ -72,12 +72,13 @@ const boot = document.getElementById("boot");
 
 let scene, camera, renderer, material;
 let years = [], notes = {}, textures = [];
+let registrationTextures = [], registrationSize = [1, 1], registrationRange = .125;
 
 // Continuous position along the timeline, in units of keyframe index.
 // tPos = 3.4 means "40% of the way from years[3] to years[4]" and the sphere
 // shows exactly that cross-dissolve. This is what makes scrubbing continuous
 // rather than snapping from one year to the next.
-let tPos = 0, tTarget = 0, tween = null;
+let tPos = 0;
 
 // Camera state is damped: pointer input moves the *target*, the camera eases
 // toward it every frame, so a flick doesn't jerk the view.
@@ -90,15 +91,37 @@ fetch(base + "manifest.json")
     boot.textContent = "Could not load the panoramas. Check your connection and reload.";
   });
 
-function start(manifest) {
+async function start(manifest) {
   years = manifest.years.slice().sort((a, b) => a - b);
   notes = manifest.notes || {};
   if (!years.length) { boot.textContent = "Manifest lists no years yet."; return; }
   document.getElementById("title").textContent = manifest.name || loc;
 
+  let registration;
+  if (manifest.registration && new URLSearchParams(location.search).get("alignment") !== "off") {
+    const response = await fetch(base + manifest.registration);
+    if (!response.ok) throw new Error("Could not load panorama alignment");
+    registration = await response.json();
+    if (registration.version !== 1) throw new Error("Unsupported panorama alignment");
+    registrationSize = [registration.width, registration.height];
+    registrationRange = registration.range;
+  }
+  registrationTextures = years.map(year => {
+    const data = registration
+      ? Uint8Array.from(atob(registration.frames[year].offsets), c => c.charCodeAt(0))
+      : new Uint8Array([128, 0, 128, 0]);
+    if (data.length !== registrationSize[0] * registrationSize[1] * 4) {
+      throw new Error("Invalid panorama alignment map");
+    }
+    const texture = new THREE.DataTexture(data, ...registrationSize, THREE.RGBAFormat);
+    texture.minFilter = texture.magFilter = THREE.LinearFilter;
+    texture.needsUpdate = true;
+    return texture;
+  });
+
   let loaded = 0;
   const loader = new THREE.TextureLoader();
-  Promise.all(years.map((y, i) => new Promise(res => {
+  return Promise.all(years.map((y, i) => new Promise(res => {
     loader.load(base + (manifest.images?.[y] || y + ".jpg"), t => {
       t.minFilter = THREE.LinearFilter;      // no mipmaps: avoids seam bleed at the wrap
       t.magFilter = THREE.LinearFilter;
@@ -128,9 +151,15 @@ function build() {
   // shows a given year stalls while WebGL uploads 8MP of pixels -- exactly the
   // hitch that made scrubbing feel jumpy.
   textures.forEach(t => renderer.initTexture(t));
+  registrationTextures.forEach(t => renderer.initTexture(t));
 
   material = new THREE.ShaderMaterial({
-    uniforms: { texA: { value: textures[0] }, texB: { value: textures[0] }, mixAmt: { value: 0 } },
+    uniforms: {
+      texA: { value: textures[0] }, texB: { value: textures[0] }, mixAmt: { value: 0 },
+      warpA: { value: registrationTextures[0] }, warpB: { value: registrationTextures[0] },
+      warpSize: { value: new THREE.Vector2(...registrationSize) },
+      warpRange: { value: registrationRange }
+    },
     vertexShader: `
       varying vec2 vUv;
       void main() {
@@ -140,10 +169,24 @@ function build() {
     fragmentShader: `
       uniform sampler2D texA;
       uniform sampler2D texB;
+      uniform sampler2D warpA;
+      uniform sampler2D warpB;
+      uniform vec2 warpSize;
+      uniform float warpRange;
       uniform float mixAmt;
       varying vec2 vUv;
+      vec2 registeredUv(sampler2D warp) {
+        // Maps use image coordinates (top left); panorama textures use bottom left.
+        vec2 p = vec2(vUv.x, 1.0 - vUv.y);
+        vec4 packed = texture2D(warp, (p * (warpSize - 1.0) + 0.5) / warpSize);
+        vec2 offset = vec2(dot(packed.rg, vec2(65280.0, 255.0)),
+                           dot(packed.ba, vec2(65280.0, 255.0)));
+        p += (offset - 32768.0) * (warpRange / 32768.0);
+        return vec2(p.x, 1.0 - p.y);
+      }
       void main() {
-        gl_FragColor = mix(texture2D(texA, vUv), texture2D(texB, vUv), mixAmt);
+        gl_FragColor = mix(texture2D(texA, registeredUv(warpA)),
+                          texture2D(texB, registeredUv(warpB)), mixAmt);
       }`
   });
 
@@ -151,7 +194,7 @@ function build() {
   geo.scale(-1, 1, 1);                        // view it from the inside
   scene.add(new THREE.Mesh(geo, material));
 
-  tPos = tTarget = years.length - 1;          // open on the most recent year
+  tPos = years.length - 1;                   // open on the most recent year
   boot.style.display = "none";
   document.getElementById("hud").style.display = "";
   buildTrack();
@@ -177,7 +220,6 @@ function buildTrack() {
     label.dataset.i = i;
     label.style.left = (f * 100) + "%";
     label.textContent = y;
-    label.onclick = () => tweenTo(i);
     track.appendChild(label);
   });
   layoutLabels();
@@ -213,6 +255,8 @@ function applyTime() {
 
   material.uniforms.texA.value = textures[i];
   material.uniforms.texB.value = textures[Math.min(i + 1, n - 1)];
+  material.uniforms.warpA.value = registrationTextures[i];
+  material.uniforms.warpB.value = registrationTextures[Math.min(i + 1, n - 1)];
   material.uniforms.mixAmt.value = m;
 
   // The readout names the nearest *rendered* year. Interpolating the number
@@ -248,13 +292,8 @@ function applyTime() {
   }
 }
 
-function tweenTo(index) {
-  const from = tPos, to = Math.max(0, Math.min(years.length - 1, index));
-  if (Math.abs(to - from) < 1e-4) return;
-  // Long jumps get more time, so a click across the timeline reads as a sweep
-  // through the intervening years rather than a hard cut.
-  const dur = Math.min(2400, 300 + 260 * Math.abs(to - from));
-  tween = { from, to, dur, start: null };
+function selectYear(index) {
+  tPos = Math.max(0, Math.min(years.length - 1, Math.round(index)));
 }
 
 /* ---------- input ---------- */
@@ -262,7 +301,7 @@ function tweenTo(index) {
 function addControls() {
   const el = renderer.domElement;
   const track = document.getElementById("track");
-  let look = null, scrub = false;
+  let look = null;
 
   el.addEventListener("pointerdown", e => {
     look = { x: e.clientX, y: e.clientY, lon: lonT, lat: latT };
@@ -288,41 +327,33 @@ function addControls() {
     const f = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
     return f * (years.length - 1);
   };
-  const scrubTo = clientX => {
-    tween = null;
-    tPos = tTarget = posAt(clientX);
-  };
-
-  // A press only becomes a scrub once it actually moves; until then it is a
-  // click, and a click eases from where the knob was to where you clicked so
-  // the cross-dissolve is visible instead of snapping.
-  let downX = null;
+  let scrubPointer = null;
   track.addEventListener("pointerdown", e => {
-    if (e.target.classList.contains("tlabel")) return;
-    downX = e.clientX;
+    if (e.button !== 0 || scrubPointer !== null) return;
+    e.preventDefault();
+    scrubPointer = e.pointerId;
     track.setPointerCapture(e.pointerId);
+    track.classList.add("scrubbing");
+    const label = e.target.closest(".tlabel");
+    selectYear(label ? +label.dataset.i : posAt(e.clientX));
   });
   track.addEventListener("pointermove", e => {
-    if (downX === null) return;
-    if (!scrub) {
-      if (Math.abs(e.clientX - downX) < 4) return;
-      scrub = true; track.classList.add("scrubbing");
-    }
-    scrubTo(e.clientX);
+    if (e.pointerId === scrubPointer) tPos = posAt(e.clientX);
   });
   const endScrub = e => {
-    // Click: ease to the year you clicked. Drag: settle onto the nearest year,
-    // so the view always comes to rest on a real panorama rather than parked
-    // half way through a dissolve.
-    if (downX !== null) tweenTo(Math.round(scrub ? tPos : posAt(e.clientX)));
-    downX = null; scrub = false; track.classList.remove("scrubbing");
+    if (e.pointerId !== scrubPointer) return;
+    scrubPointer = null;
+    selectYear(tPos);
+    track.classList.remove("scrubbing");
+    if (track.hasPointerCapture(e.pointerId)) track.releasePointerCapture(e.pointerId);
   };
   track.addEventListener("pointerup", endScrub);
   track.addEventListener("pointercancel", endScrub);
+  track.addEventListener("lostpointercapture", endScrub);
 
   addEventListener("keydown", e => {
-    if (e.key === "ArrowRight") { e.preventDefault(); tweenTo(Math.round(tPos) + 1); }
-    if (e.key === "ArrowLeft")  { e.preventDefault(); tweenTo(Math.round(tPos) - 1); }
+    if (e.key === "ArrowRight") { e.preventDefault(); selectYear(Math.round(tPos) + 1); }
+    if (e.key === "ArrowLeft")  { e.preventDefault(); selectYear(Math.round(tPos) - 1); }
   });
 
   addEventListener("resize", () => {
@@ -342,13 +373,6 @@ function frame(now) {
   const dt = prev ? Math.min(64, now - prev) : 16;
   prev = now;
 
-  if (tween) {
-    tween.start = tween.start ?? now;
-    const k = Math.min(1, (now - tween.start) / tween.dur);
-    const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;  // easeInOutCubic
-    tPos = tween.from + (tween.to - tween.from) * e;
-    if (k >= 1) { tPos = tween.to; tween = null; }
-  }
   applyTime();
 
   // Exponential damping, frame-rate independent.
