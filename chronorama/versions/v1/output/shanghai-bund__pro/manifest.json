@@ -1,0 +1,21 @@
+{
+  "id": "shanghai-bund",
+  "name": "Shanghai \u2014 The Bund",
+  "anchor_year": 2020,
+  "years": [
+    1865,
+    1937,
+    1975,
+    1992,
+    2008,
+    2020
+  ],
+  "notes": {
+    "1865": "Early treaty-port era",
+    "1937": "The classic Bund skyline complete: Sassoon House with its green pyramidal copper roof, the Bank of China tower under construction, Customs House and HSBC dome",
+    "1975": "Cultural Revolution era",
+    "1992": "Pudong construction has just begun",
+    "2008": "The Shanghai World Financial Center, the bottle-opener shaped tower, newly completed as the tallest, beside Jin Mao and the Oriental Pearl",
+    "2020": "The complete modern skyline: the twisting Shanghai Tower, the bottle-opener SWFC, Jin Mao Tower and the Oriental Pearl Tower across the Huangpu River, glass towers packed along Lujiazui"
+  }
+}

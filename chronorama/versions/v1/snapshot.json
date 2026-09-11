@@ -1,0 +1,16 @@
+{
+  "deployment_id": "dpl_HULdeDUMyJyxsnz7aTGqHfTLFJYx",
+  "deployment_url": "https://chronorama-nx6tdr42b-matthew-sius-projects.vercel.app",
+  "deployed_at": "2026-08-30T03:51:30Z",
+  "description": "Original six-frame Pro release, before the Archive images, landmark registration, and immediate timeline controls. Viewer, manifest, and every JPG verified against the original Vercel deployment file hashes.",
+  "files": {
+    "index.html": "0892bf09169778ccceea36351335cd642f7ddac5ca9d05374efe78cbb9ca028d",
+    "output/shanghai-bund__pro/1865.jpg": "bc505882017d85adc22fcdcee5af0c33736e1973ec37898b061ce59232f0bb50",
+    "output/shanghai-bund__pro/1937.jpg": "5732b385feb823e998855f150073757293f70c9194b099c1a1af59b854473710",
+    "output/shanghai-bund__pro/1975.jpg": "4752ee4052d971f8351fb51a807497e0e031797743db79cee510ff0cf995fc09",
+    "output/shanghai-bund__pro/1992.jpg": "e92af9c6f36cd09091daa32cb76fbecf2dff840653f157a31fb1fb350d2ebd24",
+    "output/shanghai-bund__pro/2008.jpg": "2f86626c860f68b53c4784780dc15100fcbdda02d5cef17d8cdb400bf0bacb50",
+    "output/shanghai-bund__pro/2020.jpg": "da27833360f43e78f57fdb1807686be9cb0336e80e42c8e5ed37efa00d8f0de1",
+    "output/shanghai-bund__pro/manifest.json": "c87b84c177621577b6d51095db2afcbf83cda0222214c750b76b36ad58bcb6f9"
+  }
+}

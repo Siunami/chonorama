@@ -3,6 +3,8 @@
 Explore Shanghai's Bund from 1865 to 2020 in a panoramic timeline.
 
 Live at <https://chronorama.vercel.app>.
+The original six-image version is preserved for comparison at
+<https://chronorama.vercel.app/v1>.
 
 The viewer, 52 published panoramas, and generation tools are in
 [chronorama](chronorama/README.md).

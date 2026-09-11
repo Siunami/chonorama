@@ -14,7 +14,24 @@ if (args[0] === "--out") {
 const libraries = args.length ? args : ["shanghai-bund__gpt25aligned"];
 if (destination === root) throw new Error("Build destination must not be the source directory");
 const viewer = await readFile(join(root, "viewer.html"), "utf8");
-const { headers } = JSON.parse(await readFile(join(root, "../vercel.json"), "utf8"));
+const { headers, rewrites } = JSON.parse(await readFile(join(root, "../vercel.json"), "utf8"));
+
+// V1 is a frozen deployment, independent of the current viewer and generation inputs.
+const snapshotRoot = join(root, "versions", "v1");
+const snapshot = JSON.parse(await readFile(join(snapshotRoot, "snapshot.json"), "utf8"));
+const snapshotFiles = [];
+for (const [name, expectedHash] of Object.entries(snapshot.files)) {
+  if (name.startsWith("/") || name.split("/").includes("..")) throw new Error(`Invalid snapshot path: ${name}`);
+  let data = await readFile(join(snapshotRoot, name));
+  if (createHash("sha256").update(data).digest("hex") !== expectedHash) {
+    throw new Error(`V1 snapshot changed: ${name}`);
+  }
+  if (name === "index.html") {
+    data = Buffer.from(data.toString("utf8").replace("<head>",
+      '<head>\n<base href="/v1/">\n<link rel="icon" href="data:,">'));
+  }
+  snapshotFiles.push({ name, data });
+}
 
 // Validate and read all source files before replacing a previous build.
 const batches = [];
@@ -66,7 +83,7 @@ await writeFile(join(destination, "index.html"), viewer.replace(
   /const loc  = .*;/,
   `const loc  = new URLSearchParams(location.search).get("loc") || ${JSON.stringify(libraries[0])};`
 ));
-await writeFile(join(destination, "vercel.json"), JSON.stringify({ headers }, null, 2) + "\n");
+await writeFile(join(destination, "vercel.json"), JSON.stringify({ headers, rewrites }, null, 2) + "\n");
 for (const { library, manifest, files } of batches) {
   const target = join(destination, "output", library);
   await mkdir(target, { recursive: true });
@@ -74,4 +91,11 @@ for (const { library, manifest, files } of batches) {
   for (const { name, data } of files) await writeFile(join(target, name), data);
   console.log(`Built ${library}: ${manifest.years.length} panoramas`);
 }
+await rm(join(destination, "v1"), { recursive: true, force: true });
+for (const { name, data } of snapshotFiles) {
+  const target = join(destination, "v1", name);
+  await mkdir(dirname(target), { recursive: true });
+  await writeFile(target, data);
+}
+console.log("Preserved V1: original six-image Pro release at /v1");
 console.log(`Site ready in ${destination}`);

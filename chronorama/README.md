@@ -176,6 +176,21 @@ Some generated buildings change shape or even swap relative positions; Jin Mao
 is excluded from the control points for that reason. Moving people, boats,
 clouds, and changing architecture still dissolve between frames.
 
+### Original version
+
+The `/v1` page preserves the six-image Pro release deployed on August 30, 2026,
+before the Archive update. Its viewer, descriptions, and JPGs are frozen in
+`versions/v1` and were verified against the original deployment's file hashes.
+Every build includes this snapshot and checks it against `snapshot.json`.
+The build adds a base URL so its assets resolve under `/v1` with or without a
+trailing slash, plus an empty favicon to avoid a missing-file request. The
+snapshot's original scripts, styles, and content stay intact.
+
+The current viewer uses the public `caption` field in
+`locations/shanghai-bund.json` for its museum-style descriptions. These are
+exported to the published manifest's `notes` field. The longer generation
+instructions remain in the location file's `notes` fields.
+
 ## Deploy
 
 ```bash
