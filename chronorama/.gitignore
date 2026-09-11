@@ -1,0 +1,12 @@
+output/*
+!output/shanghai-bund__gpt25aligned/
+output/shanghai-bund__gpt25aligned/*
+!output/shanghai-bund__gpt25aligned/*.jpg
+!output/shanghai-bund__gpt25aligned/manifest.json
+Archive/
+dist/
+.claude/
+__pycache__/
+*.py[cod]
+.env
+.env.*

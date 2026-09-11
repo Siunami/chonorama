@@ -1,0 +1,238 @@
+{
+  "id": "shanghai-bund",
+  "name": "Shanghai — The Bund",
+  "scene": "the Bund waterfront in Shanghai, standing on the west-bank promenade beside the Huangpu River, with the historic Bund buildings behind the camera on one side and the river and Pudong on the other",
+  "reference": "reference/shanghai-bund.jpg",
+  "anchor_year": 2020,
+  "years": [
+    {
+      "year": 1865,
+      "notes": "Early treaty-port era. Low two and three story neoclassical colonial trading houses line the Bund, a muddy unpaved waterfront road, wooden jetties and mooring posts, Chinese sailing junks and a few Western paddle steamers on the Huangpu River. The Pudong side across the river is flat farmland, reed marsh and scattered warehouses. Gas lamps not yet common, sedan chairs and wheelbarrows, Qing dynasty clothing."
+    },
+    {
+      "year": 1870,
+      "notes": "Early treaty port maturing. Low two story verandahed hongs in brick and stucco, the waterfront road still unpaved and rutted, wooden jetties and mooring posts, dense masts of Chinese junks with a few paddle steamers, coolies with carrying poles and wheelbarrows, Qing queues and gowns. Pudong is flat farmland and reed marsh.",
+      "seed": 404
+    },
+    {
+      "year": 1875,
+      "notes": "Consolidating treaty port. Two and three story colonial trading houses and consulates in brick and stucco, the muddy bund road now partly bunded with stone, gas street lamps newly installed, rickshaws (introduced 1874) alongside wheelbarrows and sedan chairs, forests of masts from Chinese junks and a few Western paddle steamers. Pudong across the river is still flat farmland, reed marsh and a scatter of low godowns."
+    },
+    {
+      "year": 1880,
+      "notes": "Gas lit settlement. Three story masonry trading houses with arcades, cast iron gas lamps along a stone bunded waterfront, rickshaws now common alongside horse carriages, telegraph poles, more iron steamers among the junks. Pudong: reed banks, a few timber wharves and godowns."
+    },
+    {
+      "year": 1885,
+      "notes": "Consolidated concession era. More substantial masonry trading houses and consulates, gas street lamps, a landscaped promenade strip, rickshaws and horse carriages, telegraph poles, steamships alongside junks. Pudong still low: docks, godowns and farmland."
+    },
+    {
+      "year": 1890,
+      "notes": "Late Qing consolidation. Solid four story hongs and consulates, a landscaped strip of trees and benches on the promenade, gas and the first electric arc lamps together, heavy rickshaw and carriage traffic, steam launches and lighters working the wharves. Pudong: timber wharves, godowns, early chimneys."
+    },
+    {
+      "year": 1895,
+      "notes": "Late Qing boom after the Sino-Japanese war. Heavier four story masonry hongs with arcaded verandahs, the first electric arc lamps on the waterfront mixed with gas, telegraph poles and wires, horse carriages and dense rickshaw traffic, iron steamships crowding the wharves. Pudong: early timber wharves, godowns and a few factory chimneys.",
+      "seed": 404
+    },
+    {
+      "year": 1900,
+      "notes": "Turn of the century, Boxer year. Ornate four and five story stone banks, electric street lighting spreading, the first motor car curiosities among rickshaws and carriages, Sikh constables, foreign gunboats moored in the river. Pudong: shipyards, warehouses and smoking chimneys.",
+      "seed": 404
+    },
+    {
+      "year": 1905,
+      "notes": "Turn of the century boom. Grand stone bank and trading buildings of four to six stories rising along the Bund, early electric street lighting, the first automobiles mixed with rickshaws and trams beginning to appear, busy wharves, Sikh policemen directing traffic. Pudong remains low warehouses and shipyards."
+    },
+    {
+      "year": 1910,
+      "notes": "Late Qing, eve of revolution. Five story stone banks and shipping offices, electric trams running the waterfront, more automobiles, dense crowds of rickshaws, coal smoke haze, steamers and lighters. Pudong: industrial far bank of yards and chimneys.",
+      "seed": 404
+    },
+    {
+      "year": 1915,
+      "notes": "Republican era, First World War. Electric trams running on the waterfront road, early automobiles mixed with rickshaws, five and six story stone banks and trading houses, Sikh policemen on point duty, coal smoke. Pudong: shipyards, warehouses and factory chimneys along the far bank."
+    },
+    {
+      "year": 1918,
+      "notes": "End of the First World War. Six story stone facades, victory bunting and allied flags on some buildings, trams and growing motor traffic, crowds in changshan and Western dress, busy wharves. Pudong: dense low industrial waterfront."
+    },
+    {
+      "year": 1922,
+      "notes": "Eve of the great building boom. Steel framed construction arriving, the new HSBC building rising behind scaffolding and derricks, older three story hongs still standing beside it, trams and motorcars, crowds in changshan and Western suits. Pudong: dense low industrial waterfront, cranes and chimneys."
+    },
+    {
+      "year": 1925,
+      "notes": "May Thirtieth year. Large crowds and a tense police presence on the waterfront, banners and handbills, trams and motorcars, the older hongs giving way to taller steel framed work behind scaffolding. Pudong: warehouses, cranes and chimneys.",
+      "seed": 404
+    },
+    {
+      "year": 1928,
+      "notes": "Golden age construction boom. The neoclassical HSBC Building with its great dome (1923) and the Customs House with its clock tower (1927) dominate, Sassoon House nearing completion with construction scaffolding, trams and motorcars crowd the road, crowds in both Western suits and changshan. Pudong across the river is still low industrial waterfront."
+    },
+    {
+      "year": 1930,
+      "notes": "Golden age complete. Sassoon House with its green pyramidal copper roof newly finished, the HSBC dome and the Customs House clock tower dominating, dense tram and motorcar traffic, neon signs beginning, fashionable crowds. Pudong: low industrial far bank.",
+      "seed": 404
+    },
+    {
+      "year": 1932,
+      "notes": "After the January 28 incident. Sassoon House complete with its green pyramidal copper roof, the HSBC dome and the Customs House clock tower dominating, the Bank of China site not yet begun, sandbag emplacements and barbed wire at some doorways, tense crowds, gunboats moored in the river. Pudong: industrial far bank with smoke."
+    },
+    {
+      "year": 1935,
+      "notes": "Peak of the concession era. The Bank of China site UNDER CONSTRUCTION beside Sassoon House, steel frame and scaffolding rising, the rest of the stone skyline complete, heavy traffic, art deco shopfronts and neon. Pudong: industrial waterfront with smoke."
+    },
+    {
+      "year": 1937,
+      "notes": "The classic Bund skyline complete: Sassoon House with its green pyramidal copper roof, the Bank of China tower under construction, Customs House and HSBC dome. Wartime tension: naval warships anchored in the river, sandbags at doorways, distant smoke on the horizon beyond Pudong, anxious crowds, fewer pleasure craft."
+    },
+    {
+      "year": 1941,
+      "notes": "Under Japanese pressure. Japanese warships and gunboats prominent in the Huangpu, sandbags and checkpoints, fewer private cars and more bicycles and pedicabs, subdued shabby facades, anxious crowds, distant smoke. Pudong: industrial bank under military control.",
+      "seed": 404
+    },
+    {
+      "year": 1943,
+      "notes": "Japanese occupation. The former concessions formally ended, Japanese flags and notices on the stone facades, almost no private motor traffic, pedicabs and handcarts, ragged crowds and queues, requisitioned buildings, patrol boats on the river. Pudong: run down industrial bank."
+    },
+    {
+      "year": 1946,
+      "notes": "Post war Nationalist era. War worn but repaired stone facades, Republic of China flags, American jeeps and surplus trucks among the trams, US Navy warships anchored in the Huangpu, hyperinflation crowds queueing, refugees and hawkers on the promenade. Pudong: damaged and patched industrial waterfront.",
+      "seed": 404
+    },
+    {
+      "year": 1950,
+      "notes": "First year of the People's Republic. Red flags and portraits newly hung on the soot darkened colonial facades, political banners, ex Nationalist vehicles and a few buses, bicycles and handcarts, workers in plain clothing clearing and repainting. Pudong: quiet damaged docks.",
+      "seed": 404
+    },
+    {
+      "year": 1955,
+      "notes": "Early People's Republic. The same stone skyline but soot-darkened and unlit, red flags and political banners hung on the facades, red stars replacing corporate emblems, very few automobiles, bicycles and green buses, workers in simple blue and grey clothing, sparse river traffic of barges and patrol boats. Pudong is quiet docks and warehouses."
+    },
+    {
+      "year": 1960,
+      "notes": "Great Leap aftermath. Austere unlit stone facades with red stars and slogans, very sparse motor traffic, dense bicycles, plain blue and grey clothing, thin crowds, barges and tugs. Pudong: low industrial sheds and chimneys under haze."
+    },
+    {
+      "year": 1965,
+      "notes": "Socialist construction era before the Cultural Revolution. The colonial skyline intact but soot darkened and stripped of foreign emblems, red flags and a few painted slogans, an ocean of bicycles, sparse buses and lorries, workers in plain blue and grey, barges and tugs on the river. Pudong: low industrial sheds, cranes and chimneys.",
+      "seed": 404
+    },
+    {
+      "year": 1970,
+      "notes": "High Cultural Revolution. Huge red and white character billboards and Mao portraits along the whole waterfront, seas of bicycles, everyone in blue and green Mao suits, grey industrial haze, rusting barges, grimy colonial facades stripped of all advertising. Pudong: low sheds and cranes.",
+      "seed": 404
+    },
+    {
+      "year": 1975,
+      "notes": "Cultural Revolution era. Large red propaganda billboards with white characters mounted along the waterfront, a sea of bicycles, everyone in blue and green Mao suits, grey haze, rusting barges on the river, the colonial buildings shabby and streaked with grime, no advertising, no neon. Pudong low industrial sheds and cranes.",
+      "seed": 404
+    },
+    {
+      "year": 1978,
+      "notes": "Reform and opening begins. The first tentative commercial signs returning among the political slogans, slightly brighter clothing, packed buses and bicycles, more visitors on the promenade, working barges. Pudong: unchanged low warehouses and docks."
+    },
+    {
+      "year": 1982,
+      "notes": "Early reform era. The first commercial billboards and a little neon returning to the facades, brighter clothing appearing among the blue jackets, packed buses and bicycles, provincial tourists photographing the waterfront, ferries crossing. Pudong across the water is still low: warehouses, docks and workers housing, no towers.",
+      "seed": 404
+    },
+    {
+      "year": 1985,
+      "notes": "Mid reform era. Painted advertising hoardings and early neon on the Bund facades, colourful clothing common, Shanghai brand sedans and taxis appearing among the bicycles, tourist crowds with cameras, ferries. Pudong: still low warehouses, docks and workers housing.",
+      "seed": 404
+    },
+    {
+      "year": 1988,
+      "notes": "Eve of the reform boom. First commercial billboards and a little neon returning, colorful clothing reappearing, crowds of tourists from the provinces, Santana taxis and articulated buses, ferries crossing the river. Pudong across the water is still astonishingly flat: warehouses, docks and low housing, no towers at all."
+    },
+    {
+      "year": 1990,
+      "notes": "Pudong New Area just declared. Across the river the Pearl Tower site is only CLEARED GROUND: bare levelled earth, hoardings, surveying marks, piling rigs and a few crawler cranes, with the old low warehouses still standing around it. NO tower yet. Bund side: reform era traffic, billboards, dense crowds.",
+      "seed": 404
+    },
+    {
+      "year": 1992,
+      "notes": "Pudong construction has just begun. The Oriental Pearl Tower is UNDER CONSTRUCTION across the river: a bare grey concrete shaft with its three angled support legs poured, the lower sphere only a skeletal steel framework, ringed by tall red and yellow tower cranes and scaffolding, no pink cladding yet and no upper spheres. Around it a raw construction site of bare earth, hoardings and dust, with the old low warehouses of Pudong still standing behind. On the Bund side, reform era traffic, billboards and dense crowds.",
+      "seed": 404
+    },
+    {
+      "year": 1993,
+      "notes": "The Oriental Pearl Tower is NEARLY COMPLETE: all three main spheres in place and the pink cladding mostly on, the thin upper spire still being erected with a crane at the very top, some scaffolding remaining at the base. Around it a busy construction site of bare earth and cranes. Bund side: nineties traffic and crowds."
+    },
+    {
+      "year": 1994,
+      "notes": "Pudong ignition. The brand-new Oriental Pearl Tower with its pink spheres is by far the tallest structure and stands almost alone on the Pudong side — the Jin Mao Tower, Shanghai World Financial Center and Shanghai Tower DO NOT EXIST yet, no glass skyscrapers at all, only construction cranes, scaffolding and half-built concrete mid-rises of under 20 floors in Lujiazui, dust everywhere across the river. The Bund side newly cleaned up with a raised granite promenade, growing tourist crowds.",
+      "seed": 404
+    },
+    {
+      "year": 1995,
+      "notes": "The Oriental Pearl Tower newly opened and standing alone, its pink spheres clean and complete, the last construction hoardings cleared. Around it the first new mid rise offices going up with cranes on the Lujiazui site. Bund side: taxis, neon signage, tourist crowds at the railing.",
+      "seed": 77
+    },
+    {
+      "year": 1997,
+      "notes": "The Oriental Pearl Tower is finished, its pink spheres complete and standing alone as the tallest thing on the skyline. Beside it the Jin Mao Tower is UNDER CONSTRUCTION, a steel and concrete frame perhaps two thirds of its final height, wrapped in scaffolding with tower cranes on its crown. New glass mid rises filling in around them, cranes across the whole Lujiazui site. Bund side: taxis, neon, tourist crowds.",
+      "seed": 77
+    },
+    {
+      "year": 1998,
+      "notes": "The Jin Mao Tower NEARLY TOPPED OUT beside the Pearl Tower, its tiered pagoda like crown taking shape with a crane at the summit and scaffolding on the upper floors. New glass offices filling in around them. Bund side: nineties traffic, billboards, crowds."
+    },
+    {
+      "year": 2000,
+      "notes": "The Jin Mao Tower's tiered pagoda-like crown (1999) now stands beside the Oriental Pearl Tower, a forest of construction cranes and new glass office towers filling in Lujiazui, neon-lit tour boats on the river at dusk brightness, mobile phones appearing in tourists' hands."
+    },
+    {
+      "year": 2002,
+      "notes": "Pearl Tower and the completed Jin Mao stand together. The Shanghai World Financial Center site is a STALLED EXCAVATION, a deep open foundation pit behind hoardings with idle equipment, work halted since the Asian financial crisis. Around it new glass towers and cranes. Bund side: early 2000s taxis and crowds."
+    },
+    {
+      "year": 2004,
+      "notes": "The Oriental Pearl and the completed tiered Jin Mao Tower stand together. Between them the Shanghai World Financial Center is UNDER CONSTRUCTION, its lower floors and core rising from a deep site behind hoardings with a cluster of tower cranes, its distinctive trapezoid opening not yet built. Dense new glass towers and LED screens across Lujiazui.",
+      "seed": 404
+    },
+    {
+      "year": 2006,
+      "notes": "The Shanghai World Financial Center UNDER CONSTRUCTION and now well above its neighbours, a slab of steel and concrete frame with tower cranes at its crown, its trapezoid opening not yet formed, beside the Pearl and Jin Mao. Dense new Lujiazui towers and LED screens."
+    },
+    {
+      "year": 2008,
+      "notes": "The Shanghai World Financial Center, the bottle-opener shaped tower, newly completed as the tallest, beside Jin Mao and the Oriental Pearl. Dense modern Lujiazui skyline of glass towers, LED advertising screens, construction hoardings on the Bund side for the Expo renovation."
+    },
+    {
+      "year": 2010,
+      "notes": "Expo year. The bottle opener SWFC complete beside Jin Mao and the Pearl Tower, the Bund promenade freshly rebuilt in granite for the Expo with new railings and lighting, huge tourist crowds, Expo banners, tour boats and ferries crowding the river."
+    },
+    {
+      "year": 2012,
+      "notes": "The Oriental Pearl, Jin Mao and the bottle opener SWFC all complete. Beside them the Shanghai Tower is UNDER CONSTRUCTION, its concrete core and the first twisting floors risen roughly half way, encircled by tower cranes and climbing formwork. A dense modern Lujiazui of glass towers, LED advertising, tour boats on the river."
+    },
+    {
+      "year": 2013,
+      "notes": "The Shanghai Tower TOPPING OUT, its twisting form risen to nearly full height with the crown still open steelwork and tower cranes at the summit, standing with SWFC, Jin Mao and the Pearl Tower. Dense LED lit Lujiazui, smartphone carrying crowds on the rebuilt promenade."
+    },
+    {
+      "year": 2014,
+      "notes": "Shanghai Tower's twisting form topped out with tower cranes still at its crown, standing with SWFC, Jin Mao and the Oriental Pearl. The rebuilt Bund promenade with its granite flood wall and wide walkway complete, smartphone-carrying crowds, LED-lit skyline across the river."
+    },
+    {
+      "year": 2015,
+      "notes": "The Shanghai Tower newly completed, its twisting glass facade finished and cranes gone, forming the four tower group with SWFC, Jin Mao and the Oriental Pearl. Dense modern skyline, LED advertising, cruise boats, dense smartphone carrying tourists."
+    },
+    {
+      "year": 2017,
+      "notes": "The complete four tower skyline: the twisting Shanghai Tower, the bottle opener SWFC, the tiered Jin Mao and the Oriental Pearl, backed by a dense wall of glass towers. Bright LED screens across Lujiazui, the renovated granite Bund promenade thick with smartphone carrying tourists, cruise boats on the river."
+    },
+    {
+      "year": 2018,
+      "notes": "Mature modern skyline. The four towers complete and backed by a solid wall of glass high rises, bright LED media facades across Lujiazui, the granite Bund promenade packed with tourists photographing on smartphones, tour boats and barges on the river."
+    },
+    {
+      "year": 2020,
+      "notes": "The complete modern skyline: the twisting Shanghai Tower, the bottle-opener SWFC, Jin Mao Tower and the Oriental Pearl Tower across the Huangpu River, glass towers packed along Lujiazui. The renovated Bund promenade with granite paving and flood wall, tourists taking photos with smartphones, tour boats on the river, the historic stone Bund facades restored and clean behind the promenade."
+    }
+  ],
+  "framing": "LAYOUT CONTRACT -- reproduce these positions exactly, measured left-to-right across the full image width where 0% is the far left edge and 100% is the far right edge:\n- 0% to 12% AND 88% to 100%: the Bund building frontage. This is ONE continuous row of buildings that the 360 wrap cuts in half, so its right half appears at the left edge and its left half appears at the right edge, and the two halves must join perfectly if the edges were placed side by side. The building row must NOT extend past 12% or start before 88%.\n- 12% to 25% AND 75% to 88%: the waterfront road and the promenade running away from the camera upstream and downstream, with street lamps, trees and traffic.\n- 25% to 75%: OPEN WATER. The Huangpu River fills the entire middle half of the image, with the far bank as a low band on the horizon. No large near-side buildings anywhere in this middle half.\nVERTICAL BANDS -- these are measured top-to-bottom as a percentage of the image HEIGHT, where 0% is the top edge (straight up overhead) and 100% is the bottom edge (straight down at the feet):\n- 0% to 18% of height: nothing but open sky. No buildings, no masts, no cranes reach into this band.\n- 18% to 46%: sky, with the tops of the Bund buildings intruding only at the far left and far right edges, and the low far bank appearing as a thin strip at the bottom of this band.\n- Exactly 50% of height: the horizon, a dead straight horizontal line across the whole width. There must be as much sky above this line as there is water and ground below it.\n- 50% to 72%: the surface of the river, and the balustrade crossing in front of it.\n- 72% to 100%: the promenade paving at the feet, its lines curving into the point directly below the camera.\n- The stone balustrade and railing at the river edge of the promenade runs from about 18% to about 82% across, sitting just below the horizon and bowing gently downward so it is lowest at the 50% mark.\n- The bottom fifth of the image is the granite paving at the camera feet, its joint lines sweeping as concentric curves that converge toward the bottom centre, the way a real 360 camera renders the ground directly below it.\nCamera stands at one fixed spot on the promenade at eye height, about 1.6 metres above that paving, and never moves between years.\nLANDMARK ANCHORS -- the camera never moves, so any structure that exists in more than one year must appear at the SAME horizontal position and the SAME apparent size in every one of them. Positions are percentages of image width, heights are percentages of image height measured from the top edge:\n- Oriental Pearl Tower (under construction in 1992, complete from 1994 onward): its vertical axis is at 46% of width. Its base meets the far-bank waterline on the horizon at 50% of height, and its thin spire tip reaches UP ONLY AS FAR AS 27% of height. While under construction it occupies that SAME axis and the same footprint, simply unfinished and only as tall as it had reached that year. It must never be drawn taller, larger or closer than that -- across the river it is a slender distant landmark occupying under 4% of the image width, not a near or dominant structure.\n- The Lujiazui supertall cluster (Jin Mao from 1999, the bottle-opener SWFC from 2008, the twisting Shanghai Tower from 2014) stands to the RIGHT of the Pearl Tower, between 50% and 58% of width, with their roofs no higher than 28% of height.\n- Before a structure was built, leave open sky in its place; never move the other landmarks to fill the gap.\n"
+}

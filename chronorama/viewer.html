@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>chronorama viewer</title>
+<style>
+  :root { color-scheme: dark; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #06070a;
+               font-family: -apple-system, "SF Pro Text", Helvetica, sans-serif; }
+  #pano { position: absolute; inset: 0; cursor: grab; }
+  #pano.dragging { cursor: grabbing; }
+
+  #hud { position: absolute; left: 0; right: 0; bottom: 0; padding: 20px 30px 24px;
+         background: linear-gradient(transparent, rgba(0,0,0,.55) 45%, rgba(0,0,0,.82));
+         color: #fff; user-select: none; -webkit-user-select: none; }
+  #topline { display: flex; align-items: baseline; gap: 14px; }
+  #title { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; opacity: .65; }
+  #year { font-size: 42px; font-weight: 650; font-variant-numeric: tabular-nums;
+          line-height: 1.05; letter-spacing: -.01em; }
+  #era { font-size: 12px; opacity: .55; margin-left: auto; text-align: right; max-width: 42%; }
+
+  #track { position: relative; height: 40px; margin-top: 4px; touch-action: none; }
+  #rail { position: absolute; left: 0; right: 0; top: 17px; height: 2px;
+          background: rgba(255,255,255,.22); border-radius: 2px; }
+  #fill { position: absolute; left: 0; top: 17px; height: 2px; background: rgba(255,255,255,.75);
+          border-radius: 2px; width: 0; }
+  .tick { position: absolute; top: 12px; width: 1px; height: 12px; background: rgba(255,255,255,.45);
+          transform: translateX(-.5px); }
+  .tlabel { position: absolute; top: 27px; font-size: 9.5px; letter-spacing: .04em;
+            transform: translateX(-50%); color: rgba(255,255,255,.42); cursor: pointer;
+            font-variant-numeric: tabular-nums; white-space: nowrap; padding: 2px 3px; }
+  .tlabel:hover { color: #fff; }
+  .tlabel.on { color: #fff; }
+  #knob { position: absolute; top: 11px; width: 15px; height: 15px; border-radius: 50%;
+          background: #fff; transform: translateX(-7.5px); cursor: grab;
+          box-shadow: 0 2px 10px rgba(0,0,0,.7); transition: transform .12s ease; }
+  #knob:active { cursor: grabbing; }
+  #track.scrubbing #knob { transform: translateX(-7.5px) scale(1.25); }
+
+  #boot { position: absolute; inset: 0; display: flex; flex-direction: column;
+          align-items: center; justify-content: center; gap: 14px; color: #8a8f99;
+          font-size: 13px; text-align: center; padding: 0 40px; }
+  #bootbar { width: 190px; height: 2px; background: rgba(255,255,255,.13); border-radius: 2px; }
+  #bootfill { height: 100%; width: 0; background: #fff; border-radius: 2px; transition: width .2s; }
+</style>
+</head>
+<body>
+<div id="pano"></div>
+
+<div id="boot"><div>loading panoramas…</div><div id="bootbar"><div id="bootfill"></div></div></div>
+
+<div id="hud" style="display:none">
+  <div id="topline">
+    <div>
+      <div id="title"></div>
+      <div id="year"></div>
+    </div>
+    <div id="era"></div>
+  </div>
+  <div id="track">
+    <div id="rail"></div><div id="fill"></div><div id="knob"></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+const loc  = new URLSearchParams(location.search).get("loc") || "shanghai-bund__gpt25aligned";
+const base = `output/${loc}/`;
+const boot = document.getElementById("boot");
+
+let scene, camera, renderer, material;
+let years = [], notes = {}, textures = [];
+
+// Continuous position along the timeline, in units of keyframe index.
+// tPos = 3.4 means "40% of the way from years[3] to years[4]" and the sphere
+// shows exactly that cross-dissolve. This is what makes scrubbing continuous
+// rather than snapping from one year to the next.
+let tPos = 0, tTarget = 0, tween = null;
+
+// Camera state is damped: pointer input moves the *target*, the camera eases
+// toward it every frame, so a flick doesn't jerk the view.
+let lon = 180, lat = 4, lonT = 180, latT = 4, fov = 78, fovT = 78;
+
+fetch(base + "manifest.json")
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(start)
+  .catch(() => {
+    boot.textContent = "Could not load the panoramas. Check your connection and reload.";
+  });
+
+function start(manifest) {
+  years = manifest.years.slice().sort((a, b) => a - b);
+  notes = manifest.notes || {};
+  if (!years.length) { boot.textContent = "Manifest lists no years yet."; return; }
+  document.getElementById("title").textContent = manifest.name || loc;
+
+  let loaded = 0;
+  const loader = new THREE.TextureLoader();
+  Promise.all(years.map((y, i) => new Promise(res => {
+    loader.load(base + (manifest.images?.[y] || y + ".jpg"), t => {
+      t.minFilter = THREE.LinearFilter;      // no mipmaps: avoids seam bleed at the wrap
+      t.magFilter = THREE.LinearFilter;
+      t.generateMipmaps = false;
+      t.wrapS = THREE.RepeatWrapping;        // sample continuously across the 360 seam
+      textures[i] = t;
+      document.getElementById("bootfill").style.width = (++loaded / years.length * 100) + "%";
+      res();
+    }, undefined, () => { textures[i] = null; res(); });
+  }))).then(build);
+}
+
+function build() {
+  if (textures.some(t => !t)) {
+    boot.textContent = "Some panoramas failed to load. Check your connection and reload.";
+    return;
+  }
+
+  scene = new THREE.Scene();
+  camera = new THREE.PerspectiveCamera(fov, innerWidth / innerHeight, 0.1, 200);
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(innerWidth, innerHeight);
+  document.getElementById("pano").appendChild(renderer.domElement);
+
+  // Upload every texture to the GPU now. Without this, the first frame that
+  // shows a given year stalls while WebGL uploads 8MP of pixels -- exactly the
+  // hitch that made scrubbing feel jumpy.
+  textures.forEach(t => renderer.initTexture(t));
+
+  material = new THREE.ShaderMaterial({
+    uniforms: { texA: { value: textures[0] }, texB: { value: textures[0] }, mixAmt: { value: 0 } },
+    vertexShader: `
+      varying vec2 vUv;
+      void main() {
+        vUv = uv;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+      }`,
+    fragmentShader: `
+      uniform sampler2D texA;
+      uniform sampler2D texB;
+      uniform float mixAmt;
+      varying vec2 vUv;
+      void main() {
+        gl_FragColor = mix(texture2D(texA, vUv), texture2D(texB, vUv), mixAmt);
+      }`
+  });
+
+  const geo = new THREE.SphereGeometry(50, 96, 64);
+  geo.scale(-1, 1, 1);                        // view it from the inside
+  scene.add(new THREE.Mesh(geo, material));
+
+  tPos = tTarget = years.length - 1;          // open on the most recent year
+  boot.style.display = "none";
+  document.getElementById("hud").style.display = "";
+  buildTrack();
+  addControls();
+  requestAnimationFrame(frame);
+}
+
+/* ---------- timeline ---------- */
+
+let labelStep = 1;
+
+function buildTrack() {
+  const track = document.getElementById("track");
+  years.forEach((y, i) => {
+    const f = years.length === 1 ? 0 : i / (years.length - 1);
+    const tick = document.createElement("div");
+    tick.className = "tick";
+    tick.style.left = (f * 100) + "%";
+    track.appendChild(tick);
+
+    const label = document.createElement("div");
+    label.className = "tlabel";
+    label.dataset.i = i;
+    label.style.left = (f * 100) + "%";
+    label.textContent = y;
+    label.onclick = () => tweenTo(i);
+    track.appendChild(label);
+  });
+  layoutLabels();
+}
+
+// With 50+ steps the year labels collide into an unreadable smear, so only
+// every Nth is drawn -- enough to keep the axis legible. Every tick still
+// renders, and applyTime() force-shows whichever label is currently active.
+function layoutLabels() {
+  const w = document.getElementById("track").getBoundingClientRect().width;
+  const n = years.length;
+  const gap = w / Math.max(1, n - 1);
+  labelStep = Math.max(1, Math.ceil(36 / Math.max(gap, 1)));
+  document.querySelectorAll(".tlabel").forEach(el => {
+    const i = +el.dataset.i;
+    const show = i === n - 1 || (i % labelStep === 0 && n - 1 - i >= labelStep);
+    el.dataset.auto = show ? "1" : "0";
+    el.style.display = show ? "" : "none";
+  });
+}
+
+// Map continuous tPos onto the two neighbouring panoramas plus a blend amount.
+// The shader uniforms are cheap to set every frame; the DOM is not, so every
+// text/style write below is guarded on an actual change. Writing them
+// unconditionally forces layout on each frame and is felt as scrub judder.
+let shownYear = null, shownPct = null, shownNearest = null;
+
+function applyTime() {
+  const n = years.length;
+  const p = Math.max(0, Math.min(n - 1, tPos));
+  const i = Math.min(Math.floor(p), Math.max(0, n - 2));
+  const m = n === 1 ? 0 : p - i;
+
+  material.uniforms.texA.value = textures[i];
+  material.uniforms.texB.value = textures[Math.min(i + 1, n - 1)];
+  material.uniforms.mixAmt.value = m;
+
+  // The readout names the nearest *rendered* year. Interpolating the number
+  // across a blend (1865 -> 1870 briefly reading 1867) claims an image that
+  // does not exist.
+  const year = years[Math.round(p)];
+  if (year !== shownYear) {
+    shownYear = year;
+    document.getElementById("year").textContent = year;
+  }
+
+  const pct = +((n === 1 ? 0 : p / (n - 1)) * 100).toFixed(2);
+  if (pct !== shownPct) {
+    shownPct = pct;
+    document.getElementById("knob").style.left = pct + "%";
+    document.getElementById("fill").style.width = pct + "%";
+  }
+
+  const nearest = Math.round(p);
+  const onKeyframe = Math.abs(p - nearest) < 0.08;
+  const key = nearest + (onKeyframe ? ":on" : ":off");
+  if (key !== shownNearest) {
+    shownNearest = key;
+    document.querySelectorAll(".tlabel").forEach(el => {
+      const active = +el.dataset.i === nearest;
+      el.classList.toggle("on", active);
+      // The year you are actually on is always readable, thinned out or not.
+      const show = active || (el.dataset.auto === "1" && Math.abs(+el.dataset.i - nearest) >= labelStep);
+      el.style.display = show ? "" : "none";
+    });
+    const note = notes[years[nearest]];
+    document.getElementById("era").textContent = (onKeyframe && note) ? note : "";
+  }
+}
+
+function tweenTo(index) {
+  const from = tPos, to = Math.max(0, Math.min(years.length - 1, index));
+  if (Math.abs(to - from) < 1e-4) return;
+  // Long jumps get more time, so a click across the timeline reads as a sweep
+  // through the intervening years rather than a hard cut.
+  const dur = Math.min(2400, 300 + 260 * Math.abs(to - from));
+  tween = { from, to, dur, start: null };
+}
+
+/* ---------- input ---------- */
+
+function addControls() {
+  const el = renderer.domElement;
+  const track = document.getElementById("track");
+  let look = null, scrub = false;
+
+  el.addEventListener("pointerdown", e => {
+    look = { x: e.clientX, y: e.clientY, lon: lonT, lat: latT };
+    el.setPointerCapture(e.pointerId);
+    el.parentElement.classList.add("dragging");
+  });
+  el.addEventListener("pointermove", e => {
+    if (!look) return;
+    const k = fov / 78 * 0.13;                 // pan slower when zoomed in
+    lonT = look.lon - (e.clientX - look.x) * k;
+    latT = Math.max(-88, Math.min(88, look.lat + (e.clientY - look.y) * k));
+  });
+  const endLook = () => { look = null; el.parentElement.classList.remove("dragging"); };
+  el.addEventListener("pointerup", endLook);
+  el.addEventListener("pointercancel", endLook);
+
+  el.addEventListener("wheel", e => {
+    fovT = Math.max(28, Math.min(100, fovT + e.deltaY * 0.05));
+  }, { passive: true });
+
+  const posAt = clientX => {
+    const r = track.getBoundingClientRect();
+    const f = Math.max(0, Math.min(1, (clientX - r.left) / r.width));
+    return f * (years.length - 1);
+  };
+  const scrubTo = clientX => {
+    tween = null;
+    tPos = tTarget = posAt(clientX);
+  };
+
+  // A press only becomes a scrub once it actually moves; until then it is a
+  // click, and a click eases from where the knob was to where you clicked so
+  // the cross-dissolve is visible instead of snapping.
+  let downX = null;
+  track.addEventListener("pointerdown", e => {
+    if (e.target.classList.contains("tlabel")) return;
+    downX = e.clientX;
+    track.setPointerCapture(e.pointerId);
+  });
+  track.addEventListener("pointermove", e => {
+    if (downX === null) return;
+    if (!scrub) {
+      if (Math.abs(e.clientX - downX) < 4) return;
+      scrub = true; track.classList.add("scrubbing");
+    }
+    scrubTo(e.clientX);
+  });
+  const endScrub = e => {
+    // Click: ease to the year you clicked. Drag: settle onto the nearest year,
+    // so the view always comes to rest on a real panorama rather than parked
+    // half way through a dissolve.
+    if (downX !== null) tweenTo(Math.round(scrub ? tPos : posAt(e.clientX)));
+    downX = null; scrub = false; track.classList.remove("scrubbing");
+  };
+  track.addEventListener("pointerup", endScrub);
+  track.addEventListener("pointercancel", endScrub);
+
+  addEventListener("keydown", e => {
+    if (e.key === "ArrowRight") { e.preventDefault(); tweenTo(Math.round(tPos) + 1); }
+    if (e.key === "ArrowLeft")  { e.preventDefault(); tweenTo(Math.round(tPos) - 1); }
+  });
+
+  addEventListener("resize", () => {
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+    layoutLabels();
+    shownNearest = null;               // force the active label to re-show
+  });
+}
+
+/* ---------- frame loop ---------- */
+
+let prev = 0;
+function frame(now) {
+  requestAnimationFrame(frame);
+  const dt = prev ? Math.min(64, now - prev) : 16;
+  prev = now;
+
+  if (tween) {
+    tween.start = tween.start ?? now;
+    const k = Math.min(1, (now - tween.start) / tween.dur);
+    const e = k < 0.5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2;  // easeInOutCubic
+    tPos = tween.from + (tween.to - tween.from) * e;
+    if (k >= 1) { tPos = tween.to; tween = null; }
+  }
+  applyTime();
+
+  // Exponential damping, frame-rate independent.
+  const s = 1 - Math.pow(0.0015, dt / 1000);
+  lon += (lonT - lon) * s;
+  lat += (latT - lat) * s;
+  if (Math.abs(fovT - fov) > 0.01) {
+    fov += (fovT - fov) * s;
+    camera.fov = fov;
+    camera.updateProjectionMatrix();
+  }
+
+  const phi = THREE.MathUtils.degToRad(90 - lat);
+  const theta = THREE.MathUtils.degToRad(lon);
+  camera.lookAt(
+    Math.sin(phi) * Math.cos(theta),
+    Math.cos(phi),
+    Math.sin(phi) * Math.sin(theta)
+  );
+  renderer.render(scene, camera);
+}
+</script>
+</body>
+</html>
