@@ -6,10 +6,15 @@ Live at <https://chronorama.vercel.app>.
 The original six-image version is preserved for comparison at
 <https://chronorama.vercel.app/v1>.
 
-The viewer, 52 published panoramas, and generation tools are in
+The viewer and generation tools are in
 [chronorama](chronorama/README.md).
 
-To preview the published site locally:
+Image folders are local and ignored by Git. Before building a fresh checkout,
+copy `chronorama/output/`, `chronorama/reference/`, and
+`chronorama/versions/v1/output/` from an existing workspace, including their
+manifests and alignment data.
+
+To preview the site with those assets in place:
 
 ```sh
 node chronorama/build.mjs
