@@ -232,3 +232,45 @@ step*, not equal years: dense steps when the skyline is changing fast (Shanghai
 1988–2014: every ~6 years), sparse when it isn't (1865–1905: every ~20 years).
 A step earns its place if someone scrubbing past it would notice the jump; if
 two neighbors look nearly identical, delete one.
+
+## GPT Image 2.5 backend (gengen.farm)
+
+A second backend, selected with `--provider gengen` (key: `GENGEN_API_KEY=` in `.env`).
+Model `gpt-image-2.5-sunburst`. Differences that matter:
+
+- **It renders custom sizes**, but do *not* ask for native 2:1: the model's bottom
+  edge is not the true nadir, so looking down shows a pinched arch. Use
+  `--gengen-size 3840x1600` (2.4:1) and let `equirect.py` add the pole caps.
+- **No seed**, so results are not reproducible and per-year `seed` values are
+  ignored. Use `--candidates N` (best-of-N in one request) instead.
+- **References must be hosted** (the API dropped Base64 on 2026-09-12);
+  `gengen.upload()` pushes them through GENGEN's `/files` route automatically.
+- Renders legible Chinese signage where Gemini garbles it.
+
+```bash
+python3 generate.py locations/shanghai-bund.json --provider gengen \
+    --tag gpt25wide --gengen-size 3840x1600 --quality high --candidates 3 --chain-prev
+```
+
+`--chain-prev` sends two references per year — the fixed photo (geometry
+authority, so drift cannot accumulate) and the previous year (landmark
+continuity). Pure neighbour-chaining is what made early runs wander.
+
+### Keeping a landmark still while scrubbing
+
+The Pearl Tower "moving" turned out to be ~80% apparent *size* and ~20%
+position. Size can only be fixed at generation, so best-of-N candidates are
+scored by `select_score()` on horizon + tower position + tower size. Position
+is losslessly fixable afterwards (an equirect wraps, so a roll is just turning
+the camera): `align.py` measures it, and the roll-lock pins every year's tower to the
+set's median axis. That coarse roll is the right thing to record as
+`yaw_offset` in the library's `alignment.json`; the per-pixel `landmarks.json`
+→ `register.py` displacement maps (see *Landmark alignment*) then take care of
+the residual. Use all of it — no single step suffices.
+
+### Environment caveat
+
+If this folder lives under iCloud-synced `~/Documents` with Optimize Mac
+Storage on, macOS can evict the whole output tree to the cloud (files show
+`dataless` in `ls -lO`, `du` reports 20K). Reads then block. Re-materialise with
+`brctl download <file>` per file — the directory form does not recurse.

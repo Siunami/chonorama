@@ -55,10 +55,11 @@ def find_gcloud():
             or str(Path.home() / "google-cloud-sdk" / "bin" / "gcloud"))
 
 
-def load_auth():
-    """Prefer Vertex AI via ADC (VERTEX_PROJECT in .env); fall back to an API key.
+def load_auth(provider="vertex"):
+    """Resolve credentials for the selected provider.
 
-    Returns a dict: {"mode": "vertex", "project": ...} or {"mode": "apikey", "key": ...}.
+    gengen -> {"mode": "gengen", "key": ...} from GENGEN_API_KEY
+    vertex -> {"mode": "vertex", "project": ...} via ADC, else a Gemini API key
     """
     import os
     env_file = ROOT / ".env"
@@ -68,6 +69,12 @@ def load_auth():
             if line and not line.startswith("#") and "=" in line:
                 k, _, v = line.partition("=")
                 os.environ.setdefault(k.strip(), v.strip().strip('"').strip("'"))
+    if provider == "gengen":
+        key = os.environ.get("GENGEN_API_KEY")
+        if not key:
+            sys.exit("No GENGEN_API_KEY. Add GENGEN_API_KEY=gengen_live_... to "
+                     f"{env_file} or export it in your shell.")
+        return {"mode": "gengen", "key": key}
     project = os.environ.get("VERTEX_PROJECT")
     if project:
         return {"mode": "vertex", "project": project,
@@ -165,9 +172,81 @@ def call_gemini(model, auth, prompt, ref_image=None, image_size="4K",
 
 
 from equirect import to_equirect  # trims smear, pads to true 2:1, blends the seam
+import gengen  # GPT Image 2.5 backend
 
 
-def build_prompt(loc, step, with_ref, base_ref=False):
+def horizon_of(path):
+    """Fraction of image height where the sky/ground transition sits (0.5 = ideal).
+
+    The search is deliberately narrow (38%-62%). A wider window locks onto the
+    promenade railing instead: its dark edge against bright water is a stronger
+    gradient than a hazy distant far bank, which made well-framed images measure
+    as badly off (1975 read 0.668 when its horizon was exactly on 0.500). In a
+    correct equirectangular frame the horizon is near the middle by definition,
+    so anything outside this band is not the horizon.
+    """
+    import numpy as np
+    from PIL import Image
+    a = np.asarray(Image.open(path).convert("L").resize((512, 256))).astype(np.float32)
+    prof = np.convolve(a.mean(axis=1), np.ones(5) / 5, mode="same")
+    g = np.abs(np.diff(prof))
+    lo, hi = int(256 * 0.38), int(256 * 0.62)
+    return (lo + int(np.argmax(g[lo:hi]))) / 256.0
+
+
+def tower_of(path):
+    """(x%, sphere-top%) of the Oriental Pearl Tower, or None if not present.
+
+    Found by its magenta spheres: red AND blue both clearly above green. That
+    last condition matters -- warm Bund stonework has red above green too, but
+    blue below it, and an earlier detector that only checked red locked onto
+    the buildings at the frame edges instead of the tower.
+    """
+    import numpy as np
+    from PIL import Image
+    W, H = 1440, 360
+    a = np.asarray(Image.open(path).convert("RGB").resize((W, H))).astype(np.float32)
+    # Search only ABOVE the horizon. The spheres always sit above it, whereas
+    # pink things at or below it (a banner, a boat, a reflection) do not -- in
+    # 2018 one such blob at the waterline out-scored the real tower by 0.2 and
+    # sent the roll-lock 23 degrees the wrong way.
+    top, bot = int(H * 0.25), int(H * 0.48)
+    band = a[top:bot]
+    R, G, B = band[:, :, 0], band[:, :, 1], band[:, :, 2]
+    pink = (R - G > 22) & (B - G > 8) & (R > 95)
+    score = np.convolve(pink.sum(axis=0).astype(np.float32), np.ones(11) / 11, mode="same")
+    if score.max() < 3.0:
+        return None
+    x = int(np.argmax(score))
+    if not (0.30 * W < x < 0.70 * W):
+        return None
+    rows = np.where(pink[:, max(0, x - 12):x + 12].any(axis=1))[0]
+    if len(rows) == 0:
+        return None
+    return x / W * 100.0, (top + rows[0]) / H * 100.0
+
+
+# Targets for candidate selection. Tower values are the current set's medians:
+# the goal is that every year agrees, so consistency beats any absolute ideal.
+TOWER_X, TOWER_TOP = 47.83, 32.0
+
+
+def select_score(path):
+    """Lower is better. Horizon always counts; the tower counts when present.
+
+    Apparent size was the dominant drift -- the spire height varied ~7.8% of
+    frame height against ~1% of width for position -- so it is weighted the
+    same as the horizon rather than treated as a tiebreak.
+    """
+    s = abs(horizon_of(path) - 0.5) * 100.0
+    t = tower_of(path)
+    if t:
+        x, top = t
+        s += abs(x - TOWER_X) + abs(top - TOWER_TOP)
+    return s
+
+
+def build_prompt(loc, step, with_ref, base_ref=False, prev_year=None):
     era = step["notes"]
     year = step["year"]
     if base_ref:
@@ -199,7 +278,18 @@ def build_prompt(loc, step, with_ref, base_ref=False):
             "rotate, mirror or re-centre the scene. If you were to lay your image on "
             "top of the attached one, the shoreline, the horizon and the railing would "
             "line up.\n\n"
-            f"WHAT CHANGES: only history. Do NOT copy the attached photo's time of day, "
+            + (f"SECOND ATTACHED IMAGE -- CONTINUITY: a second image is attached. It is this "
+               f"same panorama as it looked in {prev_year}, the immediately preceding step in "
+               f"the series. Every building, tower, road, railing and shoreline that already "
+               f"exists in that {prev_year} image must appear in yours at the SAME horizontal "
+               f"position, the SAME height and the SAME apparent size -- the camera has not "
+               f"moved between {prev_year} and {year}. Change ONLY what actually changed in "
+               f"those {year - prev_year} year" + ("s" if year - prev_year != 1 else "") + ": add what was built, remove what was "
+               f"demolished, update vehicles, clothing and signage. Treat it as the same "
+               f"photograph retaken later from the identical tripod, not as a new composition. "
+               f"The first attached image remains the authority for overall geometry.\n\n"
+               if prev_year else "")
+            + f"WHAT CHANGES: only history. Do NOT copy the attached photo's time of day, "
             "lighting, weather or sky, and do NOT include any building, vehicle, sign, "
             f"object or person that did not exist in {year} -- the attached photo is "
             "modern and is a geometry reference only.\n\n"
@@ -241,7 +331,9 @@ def main():
     ap.add_argument("location", help="path to a location json, e.g. locations/shanghai-bund.json")
     ap.add_argument("--only", type=int, help="generate just this year")
     ap.add_argument("--force", action="store_true", help="regenerate even if the file exists")
-    ap.add_argument("--model", default=DEFAULT_MODEL)
+    ap.add_argument("--model", default=None,
+                    help="defaults to gemini-3-pro-image (vertex) or "
+                         "gpt-image-2.5-sunburst (gengen)")
     ap.add_argument("--size", default="4K", help="imageSize for the pro model (1K/2K/4K); use '' to omit")
     ap.add_argument("--no-ref", action="store_true", help="text-only prompts, ignore the geometry reference")
     ap.add_argument("--jobs", type=int, default=3, help="how many years to render concurrently")
@@ -251,9 +343,23 @@ def main():
                     help="low values follow the layout contract more literally")
     ap.add_argument("--tag", default="",
                     help="write to output/<id>__<tag>/ instead of output/<id>/ (for benchmarks)")
+    ap.add_argument("--provider", default="vertex", choices=["vertex", "gengen"],
+                    help="vertex = Gemini via ADC; gengen = GPT Image 2.5 via gengen.farm")
+    ap.add_argument("--gengen-size", default=None,
+                    help="gengen only: WIDTHxHEIGHT. Wider than 2:1 lets the equirect "
+                         "pipeline add converging pole caps, as it does for Gemini's 21:9.")
+    ap.add_argument("--quality", default="high",
+                    help="gengen only: low/medium/high/xhigh/max")
+    ap.add_argument("--chain-prev", action="store_true",
+                    help="also send the previous year's image as a second reference, "
+                         "so existing landmarks stay put between steps")
+    ap.add_argument("--candidates", type=int, default=1,
+                    help="gengen only: render N per year in one call, keep the best horizon")
     ap.add_argument("--reprocess", action="store_true",
                     help="re-run equirect post-processing on saved raws; no API calls")
     args = ap.parse_args()
+    if args.model is None:
+        args.model = gengen.DEFAULT_MODEL if args.provider == "gengen" else DEFAULT_MODEL
 
     loc = json.loads(Path(args.location).read_text())
     out_dir = ROOT / "output" / (loc["id"] + (f"__{args.tag}" if args.tag else ""))
@@ -304,7 +410,7 @@ def main():
         print(f"\nReprocessed {len(done)} image(s).")
         return
 
-    auth = load_auth()
+    auth = load_auth(args.provider)
 
     steps = sorted(loc["years"], key=lambda s: s["year"])
     anchor = loc["anchor_year"]
@@ -339,24 +445,59 @@ def main():
             continue
         todo.append(step)
 
+    all_years = sorted(s["year"] for s in loc["years"])
+
     def render(step):
         year = step["year"]
+        if args.chain_prev:
+            i = all_years.index(year)
+            if i > 0:
+                p = out_dir / f"{all_years[i-1]}.jpg"
+                if p.exists():
+                    step = dict(step, _prev_year=all_years[i-1], _prev_bytes=p.read_bytes())
+        prev_year = step.get("_prev_year")
+        prev_bytes = step.get("_prev_bytes")
         prompt = build_prompt(loc, step, with_ref=base_ref is not None,
-                              base_ref=base_ref is not None)
+                              base_ref=base_ref is not None,
+                              prev_year=prev_year if prev_bytes else None)
         # Prove every year really is conditioned on the identical file.
         sent_sha = hashlib.sha256(base_ref).hexdigest()[:16] if base_ref else "none"
         print(f"[{year}] sending ref sha256 {sent_sha}, prompt {len(prompt)} chars")
         t0 = time.time()
-        # A year may override the shared seed. Generation is deterministic for a
-        # given (seed, prompt), so a year that lands badly cannot be improved by
-        # re-running it -- only by drawing a different sample.
-        img = call_gemini(args.model, auth, prompt, ref_image=base_ref,
-                          image_size=args.size or None,
-                          seed=step.get("seed", args.seed),
-                          temperature=args.temperature)
         raw_path = raw_dir / f"{year}.png"
-        raw_path.write_bytes(img)
         final_path = out_dir / f"{year}.jpg"
+
+        if args.provider == "gengen":
+            # No seed on this API, so a bad year CAN be improved by re-running.
+            # Better still, ask for several candidates in one request and keep
+            # the one whose horizon sits closest to the equator.
+            imgs = gengen.generate(prompt, auth["key"], ref_image=base_ref,
+                                   model=args.model, quality=args.quality,
+                                   size=args.gengen_size or gengen.NATIVE_SIZE,
+                                   count=max(1, args.candidates),
+                                   extra_refs=[prev_bytes] if prev_bytes else ())
+            best, best_dev = None, None
+            for i, blob in enumerate(imgs):
+                cand = raw_dir / (f"{year}.png" if len(imgs) == 1 else f"{year}__c{i}.png")
+                cand.write_bytes(blob)
+                dev = select_score(cand)
+                if best_dev is None or dev < best_dev:
+                    best, best_dev = cand, dev
+            if best != raw_path:
+                raw_path.write_bytes(best.read_bytes())
+                for p in raw_dir.glob(f"{year}__c*.png"):
+                    p.unlink()
+            if len(imgs) > 1:
+                print(f"[{year}] kept best of {len(imgs)} (score {best_dev:.2f})")
+        else:
+            # Vertex is deterministic for a given (seed, prompt), so a year that
+            # lands badly can only be improved by drawing a different sample.
+            img = call_gemini(args.model, auth, prompt, ref_image=base_ref,
+                              image_size=args.size or None,
+                              seed=step.get("seed", args.seed),
+                              temperature=args.temperature)
+            raw_path.write_bytes(img)
+
         to_equirect(raw_path, final_path, align_to=align_to,
                     yaw_offset=yaw_by_year.get(year, 0),
                     centre_horizon=centre_horizon)
