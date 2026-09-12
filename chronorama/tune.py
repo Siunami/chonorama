@@ -35,8 +35,11 @@ def horizon(path):
             if attempt == 3:
                 raise
             time.sleep(2)
-    g = np.abs(np.diff(a.mean(axis=1)))
-    return (38 + int(np.argmax(g[38:217]))) / 256.0
+    # Narrow band: a wider one locks onto the railing rather than the horizon.
+    prof = np.convolve(a.mean(axis=1), np.ones(5) / 5, mode="same")
+    g = np.abs(np.diff(prof))
+    lo, hi = int(256 * 0.38), int(256 * 0.62)
+    return (lo + int(np.argmax(g[lo:hi]))) / 256.0
 
 
 def run(loc_path, year, seed=None, force=False):
