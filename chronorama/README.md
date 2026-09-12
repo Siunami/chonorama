@@ -146,8 +146,10 @@ the original JPGs preserved. The archive contains three variants:
 | `__gpt25wide` | Complete 52-year wide panorama set |
 | `__gpt25aligned` | Complete 52-year set with tower alignment corrections, used by the site |
 
-Archive and the older generated libraries stay local. Only the selected
-library's finished JPGs, manifest, and alignment data are tracked in Git.
+All image folders stay local and are ignored by Git: `Archive/`, `output/`,
+`reference/`, and `versions/v1/output/`. On a fresh checkout, copy the output
+and reference folders from an existing workspace, including their manifests
+and alignment data, before building or viewing the site.
 
 ### Landmark alignment
 
@@ -202,12 +204,13 @@ node build.mjs                  # preview build in dist/
 Live at <https://chronorama.vercel.app>. `build.mjs` validates the manifest and
 reads every listed image before replacing a previous build. It stages
 `viewer.html` as `index.html` and copies the published images, manifest, and
-compiled alignment maps. Landmark annotations stay in the source repository.
+compiled alignment maps. Landmark annotations stay in the local output folder.
 Each published image has a content hash in its filename, so replacing a photo
 also changes its URL. This allows long browser caching without showing an old
 photo after a deployment.
 
-The root `vercel.json` builds the same static site from GitHub. `deploy.sh`
+The root `vercel.json` defines the static site build. GitHub checkouts require
+the ignored asset folders to be supplied before that build can run. `deploy.sh`
 uses the existing Vercel project link in `../.context/chronorama/.vercel` for a
 manual production deployment. On a new checkout, run
 `vercel link --cwd ../.context/chronorama --project chronorama` from this
