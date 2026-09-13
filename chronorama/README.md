@@ -274,3 +274,10 @@ If this folder lives under iCloud-synced `~/Documents` with Optimize Mac
 Storage on, macOS can evict the whole output tree to the cloud (files show
 `dataless` in `ls -lO`, `du` reports 20K). Reads then block. Re-materialise with
 `brctl download <file>` per file — the directory form does not recurse.
+
+## Seedance daytime timelapse pilot
+
+The Shanghai pilot connects 46 reviewed reference images with 45 four-second
+Seedance 2.0 clips, using a shared 1750–2026 calendar. See
+[SHARED_TIMELINE.md](SHARED_TIMELINE.md) for setup, local playback, resumable
+generation and the observed construction/geometry limitations.
