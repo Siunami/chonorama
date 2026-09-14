@@ -1,0 +1,51 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Shanghai · Shared Timeline</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#080a0e;color:#f3f1ea;font:14px system-ui}canvas{display:block;touch-action:none}video{display:none;position:fixed;inset:0;width:100%;height:76%;object-fit:contain}header{position:fixed;inset:0 0 auto;padding:24px 28px;background:linear-gradient(#080a0ebb,transparent);pointer-events:none}small{letter-spacing:.16em;text-transform:uppercase;opacity:.7}h1{font-size:22px;font-weight:500;margin:7px 0}#panel{position:fixed;bottom:0;left:0;right:0;padding:55px 28px 24px;background:linear-gradient(transparent,#080a0ef5 45%)}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.spacer{flex:1}button,a,select{font:inherit;background:#1c222add;color:inherit;border:1px solid #ffffff30;border-radius:8px;padding:9px 12px;text-decoration:none;cursor:pointer}button[aria-pressed=true]{background:#e9dec5;color:#181b20}button:disabled,input:disabled{opacity:.4}input{width:100%;margin:16px 0 6px;accent-color:#e8c17a}#moment{font-size:27px}#status{color:#d6be8b;margin:6px 0;font-size:12px}.dates{position:relative;height:18px;margin-bottom:16px}.dates button{position:absolute;transform:translateX(-50%);padding:0;background:none;border:0;font-size:12px;color:#bbb}footer{font-size:11px;line-height:1.5;color:#aaa;margin-top:15px}@media(max-width:600px){header{padding:18px}#panel{padding:48px 18px 18px}button,a,select{padding:8px}.dates button[data-time="16"],.dates button[data-time="76"]{display:none}}</style>
+<video id="film" muted playsinline preload="auto"></video><header><small>Chronorama · Daytime pilot</small><h1>Shanghai Bund</h1></header><div id="panel"><div class="row"><span id="moment">1750</span><span class="spacer"></span><span id="clock">0:00 / 3:00</span></div><div id="status" role="status">Loading the shared historical timeline…</div><input id="scrub" aria-label="Historical timeline" type="range" min="0" max="180" step="any" value="0" disabled><div class="dates"><button data-time="0">1750</button><button data-time="16">1850</button><button data-time="36">1900</button><button data-time="76">1950</button><button data-time="108">1990</button><button data-time="180">2026</button></div><div class="row"><button id="play" disabled>Play</button><button id="view">Flat view</button><button id="turn">Look behind</button><button id="seam" aria-pressed="true">Soften seam</button><select id="speed" aria-label="Playback speed"><option value="0.5">½ speed</option><option value="1" selected>Normal speed</option><option value="2">2× speed</option></select><span class="spacer"></span><a href="frames.html">Reference images</a><a href="timelapse.mp4" download>Download</a></div><footer><button id="pearl" disabled>Review Pearl Tower</button> <button id="shanghai" disabled>Review Shanghai Tower</button><br>Drag to look around · Scroll to zoom · 46 shared dates, 45 transitions.<br>Review finding: Shanghai Tower changes height around 2012–2014 (2:32–2:36). Rear seam and color shifts remain. Illustrative reconstruction. Seam softening applies only in 360 view.</footer></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script><script>
+const $=s=>document.querySelector(s),video=$('#film'),scrub=$('#scrub');
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));document.body.prepend(renderer.domElement);
+const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.1,100),geometry=new THREE.SphereGeometry(50,96,64);geometry.scale(-1,1,1);
+const texture=new THREE.VideoTexture(video);texture.minFilter=THREE.LinearFilter;texture.magFilter=THREE.LinearFilter;
+const material=new THREE.MeshBasicMaterial({map:texture});scene.add(new THREE.Mesh(geometry,material));
+const seamSoftness={value:1};
+material.onBeforeCompile=shader=>{
+ shader.uniforms.seamSoftness=seamSoftness;
+ shader.fragmentShader='uniform float seamSoftness;\n'+shader.fragmentShader;
+ shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>', `
+ #ifdef USE_MAP
+   vec4 texelColor = texture2D(map, vUv);
+   float edgeDistance = min(vUv.x, 1.0-vUv.x);
+   float feather = (1.0-smoothstep(0.0005,0.008,edgeDistance))*seamSoftness;
+   if (feather > 0.001) {
+     vec4 softened = vec4(0.0);
+     float totalWeight = 0.0;
+     for (int x=-6; x<=6; x++) {
+       float offset=float(x)*0.0005;
+       float weight=exp(-0.5*pow(float(x)/3.0,2.0));
+       softened += texture2D(map,vec2(fract(vUv.x+offset),vUv.y))*weight;
+       totalWeight += weight;
+     }
+     texelColor=mix(texelColor,softened/totalWeight,feather);
+   }
+   diffuseColor *= mapTexelToLinear(texelColor);
+ #endif
+ `);
+};
+material.customProgramCacheKey=()=> 'panorama-wrap-blur-v1';
+
+let lon=180,lat=0,drag=null,flat=false,playing=false,pending=null,timeline=null,ready=false;
+function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}resize();addEventListener('resize',resize);
+renderer.domElement.onpointerdown=e=>{drag=[e.clientX,e.clientY,lon,lat];renderer.domElement.setPointerCapture(e.pointerId)};renderer.domElement.onpointermove=e=>{if(drag){lon=drag[2]-(e.clientX-drag[0])*.15;lat=Math.max(-85,Math.min(85,drag[3]+(e.clientY-drag[1])*.15))}};renderer.domElement.onpointerup=renderer.domElement.onpointercancel=()=>drag=null;
+renderer.domElement.onwheel=e=>{e.preventDefault();camera.fov=Math.max(35,Math.min(100,camera.fov+e.deltaY*.03));camera.updateProjectionMatrix()};
+function label(t){if(!timeline)return;const i=Math.min(44,Math.floor(t/4)),f=Math.min(1,(t-i*4)/4),a=timeline.years[i],b=timeline.years[i+1];$('#moment').textContent=t>=180?'2026':Math.abs(t/4-Math.round(t/4))<.005?String(timeline.years[Math.round(t/4)]):'≈ '+Math.floor(a+(b-a)*f);$('#status').textContent='Daylight · '+a+' → '+b+' · Chapter '+(i+1)+' of 45';$('#clock').textContent=Math.floor(t/60)+':'+String(Math.floor(t%60)).padStart(2,'0')+' / 3:00';scrub.value=t}
+function drain(){if(video.seeking||!ready)return;if(pending!==null){const t=pending;pending=null;if(Math.abs(video.currentTime-t)>.01){video.currentTime=Math.min(t,video.duration-.002);return}}texture.needsUpdate=true;if(playing)video.play().catch(e=>{playing=false;$('#play').textContent='Play';$('#status').textContent=e.message})}
+function seek(t){video.pause();pending=Math.max(0,Math.min(180,t));label(pending);drain()}
+scrub.oninput=()=>{playing=false;$('#play').textContent='Play';seek(Math.round(Number(scrub.value)*24)/24)};video.onseeked=drain;
+for(const b of document.querySelectorAll('[data-time]')){b.style.left=(Number(b.dataset.time)/180*100)+'%';if(b.dataset.time==='0')b.style.transform='none';if(b.dataset.time==='180')b.style.transform='translateX(-100%)';b.disabled=true;b.onclick=()=>{playing=false;$('#play').textContent='Play';seek(Number(b.dataset.time))}}
+$('#play').onclick=()=>{playing=!playing;$('#play').textContent=playing?'Pause':'Play';if(playing){if(video.currentTime>=180)seek(0);else drain()}else video.pause()};video.onended=()=>{playing=false;$('#play').textContent='Play';label(180)};
+for(const [id,t,bearing] of [['pearl',108,147],['shanghai',152,219]])$('#'+id).onclick=()=>{lon=bearing;lat=18;camera.fov=90;camera.updateProjectionMatrix();playing=false;$('#play').textContent='Play';seek(t)};
+$('#speed').onchange=()=>video.playbackRate=Number($('#speed').value);
+$('#view').onclick=e=>{flat=!flat;video.style.display=flat?'block':'none';renderer.domElement.style.visibility=flat?'hidden':'visible';e.target.textContent=flat?'360 view':'Flat view';$('#turn').disabled=flat;$('#seam').disabled=flat};$('#turn').onclick=()=>lon+=180;$('#seam').onclick=()=>{seamSoftness.value=1-seamSoftness.value;$('#seam').setAttribute('aria-pressed',!!seamSoftness.value)};
+Promise.all([fetch('timeline.json').then(r=>{if(!r.ok)throw Error('Timeline unavailable');return r.json()}),new Promise((resolve,reject)=>{video.onloadeddata=resolve;video.onerror=()=>reject(Error('Video is not ready yet. Reference images are available separately.'));video.src='timelapse.mp4'})]).then(([data])=>{timeline=data;ready=true;texture.needsUpdate=true;scrub.disabled=false;$('#play').disabled=false;$('#pearl').disabled=false;$('#shanghai').disabled=false;for(const b of document.querySelectorAll('[data-time]'))b.disabled=false;label(0)}).catch(e=>$('#status').textContent=e.message);
+function draw(){requestAnimationFrame(draw);const p=THREE.MathUtils.degToRad(90-lat),t=THREE.MathUtils.degToRad(lon);camera.lookAt(Math.sin(p)*Math.cos(t),Math.cos(p),Math.sin(p)*Math.sin(t));renderer.render(scene,camera);if(playing&&!video.seeking)label(Math.min(180,video.currentTime))}draw();
+</script></html>
